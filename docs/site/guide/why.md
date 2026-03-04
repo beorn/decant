@@ -25,24 +25,24 @@ When `debug` is disabled, `log.debug` is `undefined`. JavaScript's `?.` operator
 
 10M iterations, Bun 1.1.x, M1 Mac:
 
-| Scenario                         | ops/s    | ns/op   |
-| -------------------------------- | -------- | ------- |
-| Traditional noop (cheap args)    | 2168M    | 0.5     |
-| Optional chaining (cheap args)   | 1406M    | 0.7     |
-| Traditional noop (expensive args)| 17M      | 57.6    |
+| Scenario                               | ops/s    | ns/op   |
+| -------------------------------------- | -------- | ------- |
+| Traditional noop (cheap args)          | 2168M    | 0.5     |
+| Optional chaining (cheap args)         | 1406M    | 0.7     |
+| Traditional noop (expensive args)      | 17M      | 57.6    |
 | **Optional chaining (expensive args)** | **408M** | **2.5** |
 
 For cheap arguments the overhead is ~0.2ns -- negligible. For expensive arguments, **22x faster**.
 
 ## Compared to Others
 
-| Feature              | @beorn/logger | Pino  | Winston | debug |
-| -------------------- | ------------- | ----- | ------- | ----- |
-| Zero-cost disabled   | `?.` (22x)    | noop  | noop    | check |
-| Built-in spans       | Yes           | No    | No      | No    |
-| Bundle size          | ~3KB          | ~17KB | ~200KB+ | ~2KB  |
-| TypeScript native    | Yes           | Types | Types   | Types |
-| Worker threads       | Yes           | No    | No      | No    |
+| Feature            | @beorn/logger | Pino  | Winston | debug |
+| ------------------ | ------------- | ----- | ------- | ----- |
+| Zero-cost disabled | `?.` (22x)    | noop  | noop    | check |
+| Built-in spans     | Yes           | No    | No      | No    |
+| Bundle size        | ~3KB          | ~17KB | ~200KB+ | ~2KB  |
+| TypeScript native  | Yes           | Types | Types   | Types |
+| Worker threads     | Yes           | No    | No      | No    |
 
 See [Comparison](https://github.com/beorn/logger/blob/main/docs/comparison.md) for detailed analysis of each.
 

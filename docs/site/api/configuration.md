@@ -10,8 +10,8 @@ getLogLevel(): LogLevel
 Default: `"info"`. Override with `LOG_LEVEL` env var.
 
 ```typescript
-setLogLevel("debug")  // debug, info, warn, error
-setLogLevel("error")  // error only
+setLogLevel("debug") // debug, info, warn, error
+setLogLevel("error") // error only
 setLogLevel("silent") // nothing
 ```
 
@@ -25,7 +25,7 @@ getLogFormat(): LogFormat
 Default: `"console"`. Override with `LOG_FORMAT` env var. Also auto-enabled by `NODE_ENV=production`.
 
 ```typescript
-setLogFormat("json")    // {"time":"...","level":"info","name":"myapp","msg":"..."}
+setLogFormat("json") // {"time":"...","level":"info","name":"myapp","msg":"..."}
 setLogFormat("console") // 14:32:15 INFO myapp message
 ```
 
@@ -47,8 +47,8 @@ getTraceFilter(): string[] | null
 Only emit spans matching these namespace prefixes.
 
 ```typescript
-setTraceFilter(["myapp:db"])  // Only db spans
-setTraceFilter(null)           // All spans
+setTraceFilter(["myapp:db"]) // Only db spans
+setTraceFilter(null) // All spans
 ```
 
 ## Debug Filter
@@ -61,9 +61,9 @@ getDebugFilter(): string[] | null
 Filter log output by namespace. Supports negative patterns.
 
 ```typescript
-setDebugFilter(["myapp"])               // Only myapp and children
+setDebugFilter(["myapp"]) // Only myapp and children
 setDebugFilter(["myapp", "-myapp:sql"]) // Exclude sql
-setDebugFilter(null)                     // All namespaces
+setDebugFilter(null) // All namespaces
 ```
 
 Auto-lowers log level to `debug` when set.
@@ -76,11 +76,11 @@ getOutputMode(): OutputMode
 setSuppressConsole(value: boolean): void
 ```
 
-| Mode            | Console | Writers |
-| --------------- | ------- | ------- |
-| `"console"`     | Yes     | Yes     |
-| `"stderr"`      | stderr  | Yes     |
-| `"writers-only"` | No     | Yes     |
+| Mode             | Console | Writers |
+| ---------------- | ------- | ------- |
+| `"console"`      | Yes     | Yes     |
+| `"stderr"`       | stderr  | Yes     |
+| `"writers-only"` | No      | Yes     |
 
 ## Environment Variables
 

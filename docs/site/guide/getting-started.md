@@ -33,14 +33,14 @@ Notice the `?.` -- this is intentional. When a log level is disabled, the method
 
 From most to least verbose:
 
-| Level    | Purpose                        | Default |
-| -------- | ------------------------------ | ------- |
-| `trace`  | Hot path debugging             | Off     |
-| `debug`  | Development debugging          | Off     |
-| `info`   | Normal operation               | **On**  |
-| `warn`   | Recoverable issues             | On      |
-| `error`  | Failures                       | On      |
-| `silent` | Disable all output             | --      |
+| Level    | Purpose               | Default |
+| -------- | --------------------- | ------- |
+| `trace`  | Hot path debugging    | Off     |
+| `debug`  | Development debugging | Off     |
+| `info`   | Normal operation      | **On**  |
+| `warn`   | Recoverable issues    | On      |
+| `error`  | Failures              | On      |
+| `silent` | Disable all output    | --      |
 
 Control via environment variable or programmatically:
 
@@ -60,7 +60,7 @@ Build a namespace hierarchy with `.logger()`:
 
 ```typescript
 const log = createLogger("myapp")
-const db = log.logger("db")       // namespace: "myapp:db"
+const db = log.logger("db") // namespace: "myapp:db"
 const cache = log.logger("cache") // namespace: "myapp:cache"
 
 db.info?.("connected", { host: "localhost" })

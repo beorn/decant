@@ -49,7 +49,11 @@ const req = log.child({ requestId: "abc" })
 
 ```typescript
 const span = log.span("op")
-try { /* ... */ } finally { span.end() }
+try {
+  /* ... */
+} finally {
+  span.end()
+}
 ```
 
 ## ConditionalLogger
@@ -84,12 +88,12 @@ interface SpanLogger extends Logger, Disposable {
 
 ### SpanData
 
-| Property    | Type             | Writable | Description                      |
-| ----------- | ---------------- | -------- | -------------------------------- |
-| `id`        | `string`         | No       | `sp_1`, `sp_2`, ...              |
-| `traceId`   | `string`         | No       | Shared across nested spans       |
-| `parentId`  | `string \| null` | No       | Parent span ID                   |
-| `startTime` | `number`         | No       | Start timestamp                  |
-| `endTime`   | `number \| null` | No       | End timestamp                    |
-| `duration`  | `number`         | No       | Live computed duration           |
-| `[custom]`  | `unknown`        | **Yes**  | `span.spanData.key = value`      |
+| Property    | Type             | Writable | Description                 |
+| ----------- | ---------------- | -------- | --------------------------- |
+| `id`        | `string`         | No       | `sp_1`, `sp_2`, ...         |
+| `traceId`   | `string`         | No       | Shared across nested spans  |
+| `parentId`  | `string \| null` | No       | Parent span ID              |
+| `startTime` | `number`         | No       | Start timestamp             |
+| `endTime`   | `number \| null` | No       | End timestamp               |
+| `duration`  | `number`         | No       | Live computed duration      |
+| `[custom]`  | `unknown`        | **Yes**  | `span.spanData.key = value` |

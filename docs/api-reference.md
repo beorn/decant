@@ -24,10 +24,10 @@ Create a logger. Disabled log levels return `undefined` -- use optional chaining
 
 ### Parameters
 
-| Parameter | Type                      | Required | Description                                  |
-| --------- | ------------------------- | -------- | -------------------------------------------- |
+| Parameter | Type                      | Required | Description                                      |
+| --------- | ------------------------- | -------- | ------------------------------------------------ |
 | `name`    | `string`                  | Yes      | Logger namespace (e.g., `"myapp"`, `"myapp:db"`) |
-| `props`   | `Record<string, unknown>` | No       | Properties included in every log message     |
+| `props`   | `Record<string, unknown>` | No       | Properties included in every log message         |
 
 ### Returns
 
@@ -73,11 +73,11 @@ interface Logger {
 
 ### Properties
 
-| Property   | Type                      | Description                                   |
-| ---------- | ------------------------- | --------------------------------------------- |
-| `name`     | `string`                  | Logger namespace (e.g., `"myapp:import"`)     |
-| `props`    | `Record<string, unknown>` | Frozen props (own + inherited from parent)    |
-| `spanData` | `SpanData \| null`        | Non-null for span loggers, null for regular   |
+| Property   | Type                      | Description                                 |
+| ---------- | ------------------------- | ------------------------------------------- |
+| `name`     | `string`                  | Logger namespace (e.g., `"myapp:import"`)   |
+| `props`    | `Record<string, unknown>` | Frozen props (own + inherited from parent)  |
+| `spanData` | `SpanData \| null`        | Non-null for span loggers, null for regular |
 
 ### Logging Methods
 
@@ -171,15 +171,15 @@ SpanLogger extends Logger with non-null `spanData` and `Disposable` for automati
 
 ### SpanData Properties
 
-| Property    | Type             | Mutable | Description                                |
-| ----------- | ---------------- | ------- | ------------------------------------------ |
-| `id`        | `string`         | No      | Unique span ID (`sp_1`, `sp_2`, ...)       |
-| `traceId`   | `string`         | No      | Trace ID (shared across nested spans)      |
-| `parentId`  | `string \| null` | No      | Parent span ID (null for root spans)       |
-| `startTime` | `number`         | No      | Start timestamp (ms since epoch)           |
-| `endTime`   | `number \| null` | No      | End timestamp (null until span ends)       |
-| `duration`  | `number \| null` | No      | Computed duration (live while active)      |
-| `[custom]`  | `unknown`        | Yes     | Set directly: `span.spanData.key = value`  |
+| Property    | Type             | Mutable | Description                               |
+| ----------- | ---------------- | ------- | ----------------------------------------- |
+| `id`        | `string`         | No      | Unique span ID (`sp_1`, `sp_2`, ...)      |
+| `traceId`   | `string`         | No      | Trace ID (shared across nested spans)     |
+| `parentId`  | `string \| null` | No      | Parent span ID (null for root spans)      |
+| `startTime` | `number`         | No      | Start timestamp (ms since epoch)          |
+| `endTime`   | `number \| null` | No      | End timestamp (null until span ends)      |
+| `duration`  | `number \| null` | No      | Computed duration (live while active)     |
+| `[custom]`  | `unknown`        | Yes     | Set directly: `span.spanData.key = value` |
 
 ### Nested Spans
 
@@ -208,8 +208,8 @@ getLogLevel(): LogLevel
 ```
 
 ```typescript
-setLogLevel("warn")   // Only warn and error
-setLogLevel("trace")  // Everything
+setLogLevel("warn") // Only warn and error
+setLogLevel("trace") // Everything
 setLogLevel("silent") // Nothing
 ```
 
@@ -223,7 +223,7 @@ getLogFormat(): LogFormat
 ```
 
 ```typescript
-setLogFormat("json")    // Structured JSON output
+setLogFormat("json") // Structured JSON output
 setLogFormat("console") // Human-readable console output
 ```
 
@@ -247,9 +247,9 @@ getTraceFilter(): string[] | null
 Filter which namespaces produce span output:
 
 ```typescript
-setTraceFilter(["myapp"])        // Only myapp and myapp:* spans
-setTraceFilter(["db", "cache"])  // Only db:* and cache:* spans
-setTraceFilter(null)             // All spans
+setTraceFilter(["myapp"]) // Only myapp and myapp:* spans
+setTraceFilter(["db", "cache"]) // Only db:* and cache:* spans
+setTraceFilter(null) // All spans
 ```
 
 ### Debug Filter
@@ -262,9 +262,9 @@ getDebugFilter(): string[] | null
 Filter which namespaces produce log output (like the `DEBUG` env var):
 
 ```typescript
-setDebugFilter(["myapp"])              // Only myapp and myapp:*
+setDebugFilter(["myapp"]) // Only myapp and myapp:*
 setDebugFilter(["myapp", "-myapp:sql"]) // myapp but not myapp:sql
-setDebugFilter(null)                    // All namespaces
+setDebugFilter(null) // All namespaces
 ```
 
 Auto-lowers log level to `debug` when set.
@@ -277,24 +277,24 @@ getOutputMode(): OutputMode
 setSuppressConsole(value: boolean): void
 ```
 
-| Mode            | Console | Writers |
-| --------------- | ------- | ------- |
-| `"console"`     | Yes     | Yes     |
-| `"stderr"`      | stderr  | Yes     |
-| `"writers-only"` | No     | Yes     |
+| Mode             | Console | Writers |
+| ---------------- | ------- | ------- |
+| `"console"`      | Yes     | Yes     |
+| `"stderr"`       | stderr  | Yes     |
+| `"writers-only"` | No      | Yes     |
 
 `setSuppressConsole(true)` suppresses console but writers still receive output.
 
 ### Environment Variables
 
-| Variable       | Values                                  | Effect                     |
-| -------------- | --------------------------------------- | -------------------------- |
-| `LOG_LEVEL`    | trace, debug, info, warn, error, silent | Filter output by level     |
-| `LOG_FORMAT`   | console, json                           | Output format              |
-| `DEBUG`        | `*`, namespace prefixes, `-prefix`      | Filter by namespace        |
-| `TRACE`        | `1`, `true`, or namespace prefixes      | Enable span output         |
-| `TRACE_FORMAT` | json                                    | Force JSON output          |
-| `NODE_ENV`     | production                              | Auto-enable JSON format    |
+| Variable       | Values                                  | Effect                  |
+| -------------- | --------------------------------------- | ----------------------- |
+| `LOG_LEVEL`    | trace, debug, info, warn, error, silent | Filter output by level  |
+| `LOG_FORMAT`   | console, json                           | Output format           |
+| `DEBUG`        | `*`, namespace prefixes, `-prefix`      | Filter by namespace     |
+| `TRACE`        | `1`, `true`, or namespace prefixes      | Enable span output      |
+| `TRACE_FORMAT` | json                                    | Force JSON output       |
+| `NODE_ENV`     | production                              | Auto-enable JSON format |
 
 ---
 
@@ -323,10 +323,10 @@ function createFileWriter(path: string, options?: FileWriterOptions): FileWriter
 
 Create a buffered file writer with automatic flushing.
 
-| Option          | Type     | Default | Description                          |
-| --------------- | -------- | ------- | ------------------------------------ |
+| Option          | Type     | Default | Description                            |
+| --------------- | -------- | ------- | -------------------------------------- |
 | `bufferSize`    | `number` | 4096    | Flush when buffer exceeds this (bytes) |
-| `flushInterval` | `number` | 100     | Flush every N milliseconds           |
+| `flushInterval` | `number` | 100     | Flush every N milliseconds             |
 
 ```typescript
 const writer = createFileWriter("/tmp/app.log")
@@ -383,16 +383,10 @@ TypeScript enforces `?.` at compile time -- you can't call `log.debug()` without
 For testing and analysis, spans can be collected programmatically.
 
 ```typescript
-import {
-  startCollecting,
-  stopCollecting,
-  getCollectedSpans,
-  clearCollectedSpans,
-  resetIds,
-} from "@beorn/logger"
+import { startCollecting, stopCollecting, getCollectedSpans, clearCollectedSpans, resetIds } from "@beorn/logger"
 
-resetIds()          // Reset ID counters for deterministic tests
-startCollecting()   // Enable span collection
+resetIds() // Reset ID counters for deterministic tests
+startCollecting() // Enable span collection
 
 const log = createLogger("test")
 {

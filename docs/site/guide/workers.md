@@ -83,12 +83,12 @@ import {
 } from "@beorn/logger/worker"
 ```
 
-| Type Guard               | Message Type             |
-| ------------------------ | ------------------------ |
-| `isWorkerConsoleMessage` | `console.*` forwarding   |
-| `isWorkerLogMessage`     | Structured log messages  |
-| `isWorkerSpanMessage`    | Span start/end events    |
-| `isWorkerMessage`        | Any of the above         |
+| Type Guard               | Message Type            |
+| ------------------------ | ----------------------- |
+| `isWorkerConsoleMessage` | `console.*` forwarding  |
+| `isWorkerLogMessage`     | Structured log messages |
+| `isWorkerSpanMessage`    | Span start/end events   |
+| `isWorkerMessage`        | Any of the above        |
 
 ## Serialization
 

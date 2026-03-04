@@ -53,9 +53,7 @@ Restore original `console.*` methods.
 ### createWorkerLogHandler
 
 ```typescript
-function createWorkerLogHandler(options?: {
-  enableSpans?: boolean
-}): (message: WorkerMessage) => void
+function createWorkerLogHandler(options?: { enableSpans?: boolean }): (message: WorkerMessage) => void
 ```
 
 Handle all worker messages (logs, spans, console). Creates loggers per namespace automatically.

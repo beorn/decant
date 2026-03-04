@@ -31,13 +31,13 @@ How @beorn/logger compares to popular Node.js logging libraries.
 
 ### Differences
 
-| Aspect             | Pino                           | @beorn/logger                    |
-| ------------------ | ------------------------------ | -------------------------------- |
-| Zero-cost disabled | Noop function (args evaluated) | Optional chaining (args skipped) |
-| Spans              | External (pino-opentelemetry)  | Built-in                         |
+| Aspect             | Pino                           | @beorn/logger                      |
+| ------------------ | ------------------------------ | ---------------------------------- |
+| Zero-cost disabled | Noop function (args evaluated) | Optional chaining (args skipped)   |
+| Spans              | External (pino-opentelemetry)  | Built-in                           |
 | Transports         | Built-in (worker threads)      | File writer + custom via addWriter |
-| Formatters         | Plugin system                  | Console/JSON auto-switch         |
-| Serializers        | Configurable                   | Fixed (Error auto-handled)       |
+| Formatters         | Plugin system                  | Console/JSON auto-switch           |
+| Serializers        | Configurable                   | Fixed (Error auto-handled)         |
 
 ### When to Choose
 

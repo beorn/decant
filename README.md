@@ -52,10 +52,10 @@ log.debug?.(`state: ${JSON.stringify(computeExpensiveState())}`)
 // computeExpensiveState() never runs when debug is off -- 22x faster
 ```
 
-| Scenario            | Traditional (noop) | Optional chaining (`?.`) |
-| ------------------- | ------------------ | ------------------------ |
-| Cheap args disabled  | 2168M ops/s (0.5ns) | 1406M ops/s (0.7ns)    |
-| **Expensive args disabled** | **17M ops/s (57.6ns)** | **408M ops/s (2.5ns)** |
+| Scenario                    | Traditional (noop)     | Optional chaining (`?.`) |
+| --------------------------- | ---------------------- | ------------------------ |
+| Cheap args disabled         | 2168M ops/s (0.5ns)    | 1406M ops/s (0.7ns)      |
+| **Expensive args disabled** | **17M ops/s (57.6ns)** | **408M ops/s (2.5ns)**   |
 
 For cheap arguments the difference is negligible (~0.2ns). For expensive arguments -- string interpolation, JSON serialization, state computation -- optional chaining is **22x faster**.
 
@@ -67,7 +67,7 @@ Organize logs with `:` separators. Child loggers inherit parent context.
 
 ```typescript
 const log = createLogger("myapp", { version: "2.1" })
-const db = log.logger("db")       // myapp:db
+const db = log.logger("db") // myapp:db
 const cache = log.logger("cache") // myapp:cache
 
 db.info?.("connected")
@@ -152,8 +152,8 @@ Buffer log output to files with automatic flushing:
 import { createFileWriter, addWriter } from "@beorn/logger"
 
 const writer = createFileWriter("/tmp/app.log", {
-  bufferSize: 4096,    // Flush when buffer exceeds 4KB
-  flushInterval: 100,  // Or every 100ms, whichever comes first
+  bufferSize: 4096, // Flush when buffer exceeds 4KB
+  flushInterval: 100, // Or every 100ms, whichever comes first
 })
 
 const unsubscribe = addWriter((formatted) => writer.write(formatted))
@@ -186,14 +186,14 @@ worker.onmessage = (e) => handle(e.data)
 
 ## Environment Variables
 
-| Variable       | Values                                  | Effect                        |
-| -------------- | --------------------------------------- | ----------------------------- |
-| `LOG_LEVEL`    | trace, debug, info, warn, error, silent | Minimum output level          |
-| `LOG_FORMAT`   | console, json                           | Output format                 |
+| Variable       | Values                                  | Effect                                  |
+| -------------- | --------------------------------------- | --------------------------------------- |
+| `LOG_LEVEL`    | trace, debug, info, warn, error, silent | Minimum output level                    |
+| `LOG_FORMAT`   | console, json                           | Output format                           |
 | `DEBUG`        | `*`, namespace prefixes, `-prefix`      | Namespace filter (like `debug` package) |
-| `TRACE`        | `1`, `true`, or namespace prefixes      | Enable span output            |
-| `TRACE_FORMAT` | json                                    | Force JSON for spans          |
-| `NODE_ENV`     | production                              | Auto-enable JSON format       |
+| `TRACE`        | `1`, `true`, or namespace prefixes      | Enable span output                      |
+| `TRACE_FORMAT` | json                                    | Force JSON for spans                    |
+| `NODE_ENV`     | production                              | Auto-enable JSON format                 |
 
 ```bash
 LOG_LEVEL=debug bun run app              # Show debug and above
@@ -207,44 +207,44 @@ TRACE=myapp:db bun run app               # Spans for specific namespace only
 
 ### Core
 
-| Function | Description |
-| --- | --- |
-| `createLogger(name, props?)` | Create a conditional logger (disabled levels return `undefined`) |
-| `setLogLevel(level)` / `getLogLevel()` | Set/get minimum log level |
-| `setLogFormat(format)` / `getLogFormat()` | Set/get output format (`"console"` or `"json"`) |
-| `enableSpans()` / `disableSpans()` / `spansAreEnabled()` | Control span output |
-| `setTraceFilter(namespaces)` / `getTraceFilter()` | Filter span output by namespace |
-| `setDebugFilter(namespaces)` / `getDebugFilter()` | Filter log output by namespace |
+| Function                                                 | Description                                                      |
+| -------------------------------------------------------- | ---------------------------------------------------------------- |
+| `createLogger(name, props?)`                             | Create a conditional logger (disabled levels return `undefined`) |
+| `setLogLevel(level)` / `getLogLevel()`                   | Set/get minimum log level                                        |
+| `setLogFormat(format)` / `getLogFormat()`                | Set/get output format (`"console"` or `"json"`)                  |
+| `enableSpans()` / `disableSpans()` / `spansAreEnabled()` | Control span output                                              |
+| `setTraceFilter(namespaces)` / `getTraceFilter()`        | Filter span output by namespace                                  |
+| `setDebugFilter(namespaces)` / `getDebugFilter()`        | Filter log output by namespace                                   |
 
 ### Logger Methods
 
-| Method | Description |
-| --- | --- |
-| `.trace?.(msg, data?)` | Verbose debugging |
-| `.debug?.(msg, data?)` | Debug information |
-| `.info?.(msg, data?)` | Normal operation |
-| `.warn?.(msg, data?)` | Recoverable issues |
-| `.error?.(msg \| Error, data?)` | Failures |
-| `.logger(namespace?, props?)` | Create child logger |
-| `.span(namespace?, props?)` | Create timed span (implements `Disposable`) |
-| `.child(context)` | Create child with context fields |
+| Method                          | Description                                 |
+| ------------------------------- | ------------------------------------------- |
+| `.trace?.(msg, data?)`          | Verbose debugging                           |
+| `.debug?.(msg, data?)`          | Debug information                           |
+| `.info?.(msg, data?)`           | Normal operation                            |
+| `.warn?.(msg, data?)`           | Recoverable issues                          |
+| `.error?.(msg \| Error, data?)` | Failures                                    |
+| `.logger(namespace?, props?)`   | Create child logger                         |
+| `.span(namespace?, props?)`     | Create timed span (implements `Disposable`) |
+| `.child(context)`               | Create child with context fields            |
 
 ### Writers
 
-| Function | Description |
-| --- | --- |
-| `addWriter(fn)` | Add output writer, returns unsubscribe |
-| `createFileWriter(path, opts?)` | Buffered file writer with auto-flush |
-| `setOutputMode(mode)` | `"console"`, `"stderr"`, or `"writers-only"` |
-| `setSuppressConsole(bool)` | Suppress console output (writers still receive) |
+| Function                        | Description                                     |
+| ------------------------------- | ----------------------------------------------- |
+| `addWriter(fn)`                 | Add output writer, returns unsubscribe          |
+| `createFileWriter(path, opts?)` | Buffered file writer with auto-flush            |
+| `setOutputMode(mode)`           | `"console"`, `"stderr"`, or `"writers-only"`    |
+| `setSuppressConsole(bool)`      | Suppress console output (writers still receive) |
 
 ### Worker Thread
 
-| Function | Module | Description |
-| --- | --- | --- |
-| `createWorkerLogger(postMessage, ns, props?)` | `@beorn/logger/worker` | Logger that forwards to main thread |
-| `createWorkerLogHandler(opts?)` | `@beorn/logger/worker` | Main thread handler for worker messages |
-| `forwardConsole(postMessage, ns?)` | `@beorn/logger/worker` | Forward `console.*` from worker |
+| Function                                      | Module                 | Description                             |
+| --------------------------------------------- | ---------------------- | --------------------------------------- |
+| `createWorkerLogger(postMessage, ns, props?)` | `@beorn/logger/worker` | Logger that forwards to main thread     |
+| `createWorkerLogHandler(opts?)`               | `@beorn/logger/worker` | Main thread handler for worker messages |
+| `forwardConsole(postMessage, ns?)`            | `@beorn/logger/worker` | Forward `console.*` from worker         |
 
 ## Documentation
 

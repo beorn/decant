@@ -29,8 +29,8 @@ TRACE=myapp,other bun run app    # Multiple namespaces
 ```typescript
 import { enableSpans, setTraceFilter } from "@beorn/logger"
 
-enableSpans()                      // All spans
-setTraceFilter(["myapp:db"])       // Only db spans
+enableSpans() // All spans
+setTraceFilter(["myapp:db"]) // Only db spans
 ```
 
 ## Nested Spans
@@ -56,6 +56,7 @@ Spans automatically track parent-child relationships and share trace IDs:
 ```
 
 Output:
+
 ```
 SPAN myapp:auth (12ms) {}
 SPAN myapp:db:query (45ms) {}
@@ -73,7 +74,7 @@ Set custom attributes via `span.spanData`:
 
   for (const item of items) {
     await process(item)
-    span.spanData.processed = (span.spanData.processed as number ?? 0) + 1
+    span.spanData.processed = ((span.spanData.processed as number) ?? 0) + 1
   }
 
   span.spanData.status = "complete"
@@ -82,14 +83,14 @@ Set custom attributes via `span.spanData`:
 
 ### Read-only Properties
 
-| Property    | Type             | Description                           |
-| ----------- | ---------------- | ------------------------------------- |
-| `id`        | `string`         | Unique span ID (`sp_1`, `sp_2`, ...)  |
-| `traceId`   | `string`         | Shared across nested spans            |
-| `parentId`  | `string \| null` | Parent span ID                        |
-| `startTime` | `number`         | Start timestamp (ms since epoch)      |
-| `endTime`   | `number \| null` | End timestamp (null while running)    |
-| `duration`  | `number`         | Live duration (computed on access)    |
+| Property    | Type             | Description                          |
+| ----------- | ---------------- | ------------------------------------ |
+| `id`        | `string`         | Unique span ID (`sp_1`, `sp_2`, ...) |
+| `traceId`   | `string`         | Shared across nested spans           |
+| `parentId`  | `string \| null` | Parent span ID                       |
+| `startTime` | `number`         | Start timestamp (ms since epoch)     |
+| `endTime`   | `number \| null` | End timestamp (null while running)   |
+| `duration`  | `number`         | Live duration (computed on access)   |
 
 ## Manual End
 
@@ -127,5 +128,12 @@ TRACE=1 LOG_FORMAT=json bun run app
 ```
 
 ```json
-{"time":"2026-01-15T14:32:16.456Z","level":"span","name":"myapp:import","msg":"(1234ms)","duration":1234,"rowCount":500}
+{
+  "time": "2026-01-15T14:32:16.456Z",
+  "level": "span",
+  "name": "myapp:import",
+  "msg": "(1234ms)",
+  "duration": 1234,
+  "rowCount": 500
+}
 ```

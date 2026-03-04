@@ -30,18 +30,18 @@ Create a buffered file writer that flushes automatically.
 
 ### Options
 
-| Option          | Type     | Default | Description                              |
-| --------------- | -------- | ------- | ---------------------------------------- |
-| `bufferSize`    | `number` | 4096    | Flush when buffer exceeds this (bytes)   |
-| `flushInterval` | `number` | 100     | Flush every N milliseconds               |
+| Option          | Type     | Default | Description                            |
+| --------------- | -------- | ------- | -------------------------------------- |
+| `bufferSize`    | `number` | 4096    | Flush when buffer exceeds this (bytes) |
+| `flushInterval` | `number` | 100     | Flush every N milliseconds             |
 
 ### FileWriter Methods
 
-| Method    | Description                                |
-| --------- | ------------------------------------------ |
-| `write(line)` | Append line to buffer (adds `\n`)      |
-| `flush()`     | Write buffer to disk immediately        |
-| `close()`     | Flush remaining buffer and close file   |
+| Method        | Description                           |
+| ------------- | ------------------------------------- |
+| `write(line)` | Append line to buffer (adds `\n`)     |
+| `flush()`     | Write buffer to disk immediately      |
+| `close()`     | Flush remaining buffer and close file |
 
 ### Example
 
