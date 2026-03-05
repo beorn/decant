@@ -3,7 +3,7 @@
 ## Development Setup
 
 ```bash
-git clone https://github.com/beorn/logger.git
+git clone https://github.com/beorn/decant.git
 cd logger
 bun install
 bun run test        # Run tests

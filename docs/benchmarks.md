@@ -102,5 +102,5 @@ Span create + dispose (no output):
 bun add -d pino winston debug @types/debug
 
 # Run benchmarks
-bun vendor/beorn-logger/benchmarks/overhead.ts
+bun vendor/decant/benchmarks/overhead.ts
 ```

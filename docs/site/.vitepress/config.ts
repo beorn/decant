@@ -11,7 +11,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/guide/journey" },
       { text: "API", link: "/api/" },
-      { text: "GitHub", link: "https://github.com/beorn/logger" },
+      { text: "GitHub", link: "https://github.com/beorn/decant" },
     ],
 
     sidebar: {
@@ -51,7 +51,7 @@ export default defineConfig({
       ],
     },
 
-    socialLinks: [{ icon: "github", link: "https://github.com/beorn/logger" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/beorn/decant" }],
 
     outline: { level: [2, 3] },
 

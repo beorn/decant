@@ -1,6 +1,6 @@
 # API Reference
 
-See the [full API reference](https://github.com/beorn/logger/blob/main/docs/api-reference.md) for complete documentation.
+See the [full API reference](https://github.com/beorn/decant/blob/main/docs/api-reference.md) for complete documentation.
 
 ## Exports from `@beorn/logger`
 

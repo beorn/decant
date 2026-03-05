@@ -44,7 +44,7 @@ For cheap arguments the overhead is ~0.2ns -- negligible. For expensive argument
 | TypeScript native  | Yes           | Types | Types   | Types |
 | Worker threads     | Yes           | No    | No      | No    |
 
-See [Comparison](https://github.com/beorn/logger/blob/main/docs/comparison.md) for detailed analysis of each.
+See [Comparison](https://github.com/beorn/decant/blob/main/docs/comparison.md) for detailed analysis of each.
 
 ## Design Principles
 

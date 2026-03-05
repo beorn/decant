@@ -1,6 +1,6 @@
 # Migration from debug
 
-See the [full migration guide](https://github.com/beorn/logger/blob/main/docs/migration-from-debug.md) for step-by-step instructions.
+See the [full migration guide](https://github.com/beorn/decant/blob/main/docs/migration-from-debug.md) for step-by-step instructions.
 
 ## Quick Overview
 

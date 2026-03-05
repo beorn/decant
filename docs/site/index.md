@@ -11,7 +11,7 @@ hero:
       link: /guide/journey
     - theme: alt
       text: View on GitHub
-      link: https://github.com/beorn/logger
+      link: https://github.com/beorn/decant
 
 features:
   - title: Zero-Overhead Disabled Logging
