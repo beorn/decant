@@ -1,12 +1,12 @@
 import { defineConfig } from "vitepress"
 
 export default defineConfig({
-  title: "@beorn/logger",
+  title: "decant",
   description: "Clarity without the clutter. Ergonomic unified logs, spans, and debugs for modern TypeScript.",
   base: "/logger/",
 
   themeConfig: {
-    siteTitle: "@beorn/logger",
+    siteTitle: "decant",
 
     nav: [
       { text: "Guide", link: "/guide/journey" },

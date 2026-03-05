@@ -7,7 +7,7 @@
  *
  * @example
  * ```typescript
- * import { enableContextPropagation, getCurrentSpan } from "@beorn/logger/context"
+ * import { enableContextPropagation, getCurrentSpan } from "decant/context"
  *
  * enableContextPropagation()
  *

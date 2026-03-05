@@ -8,7 +8,7 @@
  *
  * @example Worker side:
  * ```typescript
- * import { createWorkerLogger } from "@beorn/logger/worker"
+ * import { createWorkerLogger } from "decant/worker"
  * const log = createWorkerLogger(postMessage, "km:worker:parse")
  *
  * log.info("processing", { file: "test.md" })
@@ -21,7 +21,7 @@
  *
  * @example Main thread side:
  * ```typescript
- * import { createWorkerLogHandler } from "@beorn/logger/worker"
+ * import { createWorkerLogHandler } from "decant/worker"
  *
  * const handleLog = createWorkerLogHandler()
  * worker.onmessage = (e) => {
@@ -33,7 +33,7 @@
  *
  * @example Worker side:
  * ```typescript
- * import { forwardConsole } from "@beorn/logger/worker"
+ * import { forwardConsole } from "decant/worker"
  * forwardConsole(postMessage)
  *
  * console.log("message")  // Forwarded to main thread
@@ -193,7 +193,7 @@ function serializeArg(arg: unknown, depth = 0): unknown {
  * @example
  * ```typescript
  * // At top of worker file:
- * import { forwardConsole } from "@beorn/logger/worker"
+ * import { forwardConsole } from "decant/worker"
  * forwardConsole(postMessage, "km:worker:parse")
  *
  * // Now all console.* calls are forwarded:
@@ -282,7 +282,7 @@ interface WorkerLoggerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerLogger } from "@beorn/logger/worker"
+ * import { createWorkerLogger } from "decant/worker"
  *
  * const log = createWorkerLogger(postMessage, "km:worker:parse")
  *
@@ -486,7 +486,7 @@ export interface WorkerConsoleHandlerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerConsoleHandler } from "@beorn/logger/worker"
+ * import { createWorkerConsoleHandler } from "decant/worker"
  *
  * const handleConsole = createWorkerConsoleHandler({
  *   defaultNamespace: "km:worker:parse"
@@ -576,7 +576,7 @@ export interface WorkerLogHandlerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerLogHandler, isWorkerMessage } from "@beorn/logger/worker"
+ * import { createWorkerLogHandler, isWorkerMessage } from "decant/worker"
  *
  * const handleLog = createWorkerLogHandler()
  *
