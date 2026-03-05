@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/beorn/logger.git"
+    "url": "https://github.com/beorn/decant.git"
   },
   "type": "module",
   "module": "src/index.ts",
