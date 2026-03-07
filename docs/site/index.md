@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "decant"
   text: "Clarity without the clutter"
-  tagline: "Ergonomic unified logs, spans, and debugs for modern TypeScript. ~3KB, one dependency, zero-overhead disabled logging via optional chaining."
+  tagline: "One library that replaces your debug logger, your structured logger, and your tracing SDK. ~3KB, one dependency, zero-overhead via optional chaining."
   actions:
     - theme: brand
       text: The Journey
@@ -14,18 +14,18 @@ hero:
       link: https://github.com/beorn/decant
 
 features:
-  - title: Zero-Overhead Disabled Logging
-    details: "Optional chaining skips argument evaluation entirely when a level is disabled -- 22x faster than noop functions for expensive arguments."
-  - title: Built-in Spans
-    details: "Time any operation with the using keyword. Automatic duration tracking, parent-child relationships, and trace IDs. No separate tracing library."
+  - title: "Replaces debug"
+    details: "Namespace filtering with DEBUG=myapp,-myapp:noisy — same ergonomics as the debug package. Conditional output that costs nothing when disabled."
+  - title: "Replaces pino / winston"
+    details: "Structured logging with levels, pretty console in development, JSON in production. Dual output format switches automatically via NODE_ENV."
+  - title: "Replaces OpenTelemetry"
+    details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. No separate tracing SDK needed."
+  - title: Zero-Overhead via ?.
+    details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. 22x faster than noop functions for expensive arguments."
   - title: ~3KB, One Dependency
     details: "Just picocolors for terminal colors. Native TypeScript, ESM-only. Runs on Node, Bun, and Deno."
-  - title: Dual Output Format
-    details: "Pretty console output in development, structured JSON in production. Automatic switching via NODE_ENV or LOG_FORMAT."
-  - title: Namespace Filtering
-    details: "DEBUG=myapp,-myapp:noisy works just like the debug package. TRACE=myapp:db filters span output per namespace."
-  - title: Worker Thread Support
-    details: "Forward structured logs and span events from worker threads to the main thread with full type safety."
+  - title: One Unified Pipeline
+    details: "Debug output, structured logs, and distributed traces share the same namespace tree, the same output pipeline, and the same zero-overhead pattern."
 ---
 
 ## Quick Start
