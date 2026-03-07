@@ -4,9 +4,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Clarity without the clutter. One library that replaces your debug logger, your structured logger, and your tracing SDK. **~3KB**, one dependency ([picocolors](https://github.com/alexeyraspopov/picocolors)).
+Clarity without the clutter. Debug logging, structured logs, and distributed tracing — integrated into one **~3KB** library with a single API. One dependency ([picocolors](https://github.com/alexeyraspopov/picocolors)).
 
-Most projects wire together three separate tools: **debug** for conditional verbose output, **pino/winston** for structured production logs, and **OpenTelemetry** for distributed tracing. decant unifies all three — same namespace tree, same output pipeline, same `?.` zero-overhead pattern. Every logger is a potential span: call `.span()` and it becomes one, with automatic timing, parent-child tracking, and trace IDs.
+Most projects wire together three separate tools that don't talk to each other: **debug** for conditional output, **pino/winston** for production logs, **OpenTelemetry** for tracing. decant integrates all three into one unified system — same namespace tree, same output pipeline, same `?.` zero-overhead pattern. Every logger is a potential span: call `.span()` and it becomes one, with automatic timing, parent-child tracking, and trace IDs. Nothing to sync, nothing to configure separately.
 
 Read **[The Journey](docs/guide.md)** for the full story.
 

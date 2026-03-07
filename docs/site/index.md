@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "decant"
   text: "Clarity without the clutter"
-  tagline: "One library that replaces your debug logger, your structured logger, and your tracing SDK. ~3KB, one dependency, zero-overhead via optional chaining."
+  tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. One dependency, zero-overhead via optional chaining."
   actions:
     - theme: brand
       text: The Journey
@@ -14,12 +14,12 @@ hero:
       link: https://github.com/beorn/decant
 
 features:
-  - title: "Replaces debug"
+  - title: "Debug Logging"
     details: "Namespace filtering with DEBUG=myapp,-myapp:noisy — same ergonomics as the debug package. Conditional output that costs nothing when disabled."
-  - title: "Replaces pino / winston"
+  - title: "Structured Logs"
     details: "Structured logging with levels, pretty console in development, JSON in production. Dual output format switches automatically via NODE_ENV."
-  - title: "Replaces OpenTelemetry"
-    details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. No separate tracing SDK needed."
+  - title: "Distributed Tracing"
+    details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. All integrated — no separate SDK to wire up."
   - title: Zero-Overhead via ?.
     details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. 22x faster than noop functions for expensive arguments."
   - title: ~3KB, One Dependency
