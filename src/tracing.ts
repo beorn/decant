@@ -1,5 +1,5 @@
 /**
- * Distributed tracing utilities for @beorn/logger.
+ * Distributed tracing utilities for decant.
  *
  * Provides W3C-compatible trace/span ID generation, traceparent header formatting,
  * and head-based sampling. All features are opt-in and don't break the existing API.

@@ -1,13 +1,13 @@
 # Worker Thread Support
 
-@beorn/logger provides typed message protocols for forwarding logs from worker threads to the main thread.
+decant provides typed message protocols for forwarding logs from worker threads to the main thread.
 
 ## Full Logger Forwarding
 
 ### Worker Side
 
 ```typescript
-import { createWorkerLogger } from "@beorn/logger/worker"
+import { createWorkerLogger } from "decant/worker"
 
 const log = createWorkerLogger(postMessage, "myapp:worker")
 
@@ -24,7 +24,7 @@ log.info?.("processing", { file: "data.csv" })
 ### Main Thread Side
 
 ```typescript
-import { createWorkerLogHandler, isWorkerMessage } from "@beorn/logger/worker"
+import { createWorkerLogHandler, isWorkerMessage } from "decant/worker"
 
 const handle = createWorkerLogHandler()
 
@@ -44,7 +44,7 @@ For simpler cases, forward `console.*` calls:
 ### Worker Side
 
 ```typescript
-import { forwardConsole } from "@beorn/logger/worker"
+import { forwardConsole } from "decant/worker"
 
 forwardConsole(postMessage, "myapp:worker")
 
@@ -56,7 +56,7 @@ console.error(new Error("failed"))
 ### Main Thread Side
 
 ```typescript
-import { createWorkerConsoleHandler } from "@beorn/logger/worker"
+import { createWorkerConsoleHandler } from "decant/worker"
 
 const handle = createWorkerConsoleHandler({
   defaultNamespace: "myapp:worker",
@@ -80,7 +80,7 @@ import {
   isWorkerSpanMessage,
   isWorkerMessage,
   type WorkerMessage,
-} from "@beorn/logger/worker"
+} from "decant/worker"
 ```
 
 | Type Guard               | Message Type            |
@@ -106,7 +106,7 @@ Arguments are automatically serialized for `postMessage`:
 If you need to disable console forwarding:
 
 ```typescript
-import { restoreConsole } from "@beorn/logger/worker"
+import { restoreConsole } from "decant/worker"
 
 // Later:
 restoreConsole() // Original console methods restored

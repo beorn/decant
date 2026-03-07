@@ -1,6 +1,6 @@
 # Conditional Logging Research
 
-Background research for the optional chaining pattern in @beorn/logger.
+Background research for the optional chaining pattern in decant.
 
 ## The Problem
 
@@ -93,7 +93,7 @@ Reference: [Thoughts on ES6 Proxies Performance](https://thecodebarbarian.com/th
 ### Proxy Wrapper
 
 ```typescript
-import { createLogger, getLogLevel } from "@beorn/logger"
+import { createLogger, getLogLevel } from "decant"
 
 const baseLog = createLogger("myapp")
 

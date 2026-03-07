@@ -1,4 +1,4 @@
-# @beorn/logger
+# decant
 
 [![Tests](https://github.com/beorn/decant/actions/workflows/test.yml/badge.svg)](https://github.com/beorn/decant/actions/workflows/test.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
@@ -11,13 +11,13 @@ The core idea: every logger is a potential span. Call `.span()` and it becomes o
 ## Install
 
 ```bash
-bun add @beorn/logger    # or: npm install @beorn/logger
+bun add decant    # or: npm install decant
 ```
 
 ## Quick Start
 
 ```typescript
-import { createLogger } from "@beorn/logger"
+import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 
@@ -44,10 +44,10 @@ log.debug(`state: ${JSON.stringify(computeExpensiveState())}`)
 // computeExpensiveState() runs even when debug is off
 ```
 
-@beorn/logger uses optional chaining to skip argument evaluation entirely:
+decant uses optional chaining to skip argument evaluation entirely:
 
 ```typescript
-// @beorn/logger -- args are NOT evaluated when disabled
+// decant -- args are NOT evaluated when disabled
 log.debug?.(`state: ${JSON.stringify(computeExpensiveState())}`)
 // computeExpensiveState() never runs when debug is off -- 22x faster
 ```
@@ -149,7 +149,7 @@ LOG_FORMAT=json bun run app
 Buffer log output to files with automatic flushing:
 
 ```typescript
-import { createFileWriter, addWriter } from "@beorn/logger"
+import { createFileWriter, addWriter } from "decant"
 
 const writer = createFileWriter("/tmp/app.log", {
   bufferSize: 4096, // Flush when buffer exceeds 4KB
@@ -169,7 +169,7 @@ Forward logs from worker threads to the main thread:
 
 ```typescript
 // Worker side
-import { createWorkerLogger } from "@beorn/logger/worker"
+import { createWorkerLogger } from "decant/worker"
 const log = createWorkerLogger(postMessage, "myapp:worker")
 
 log.info?.("processing", { file: "data.csv" })
@@ -179,7 +179,7 @@ log.info?.("processing", { file: "data.csv" })
 }
 
 // Main thread side
-import { createWorkerLogHandler } from "@beorn/logger/worker"
+import { createWorkerLogHandler } from "decant/worker"
 const handle = createWorkerLogHandler()
 worker.onmessage = (e) => handle(e.data)
 ```
@@ -242,9 +242,9 @@ TRACE=myapp:db bun run app               # Spans for specific namespace only
 
 | Function                                      | Module                 | Description                             |
 | --------------------------------------------- | ---------------------- | --------------------------------------- |
-| `createWorkerLogger(postMessage, ns, props?)` | `@beorn/logger/worker` | Logger that forwards to main thread     |
-| `createWorkerLogHandler(opts?)`               | `@beorn/logger/worker` | Main thread handler for worker messages |
-| `forwardConsole(postMessage, ns?)`            | `@beorn/logger/worker` | Forward `console.*` from worker         |
+| `createWorkerLogger(postMessage, ns, props?)` | `decant/worker` | Logger that forwards to main thread     |
+| `createWorkerLogHandler(opts?)`               | `decant/worker` | Main thread handler for worker messages |
+| `forwardConsole(postMessage, ns?)`            | `decant/worker` | Forward `console.*` from worker         |
 
 ## Documentation
 

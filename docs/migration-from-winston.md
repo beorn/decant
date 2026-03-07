@@ -1,10 +1,10 @@
 # Migration from Winston
 
-Step-by-step guide for migrating from Winston to @beorn/logger.
+Step-by-step guide for migrating from Winston to decant.
 
 ## Why Migrate?
 
-| Feature                   | Winston                 | @beorn/logger                 |
+| Feature                   | Winston                 | decant                 |
 | ------------------------- | ----------------------- | ----------------------------- |
 | Log levels                | Customizable            | 5 fixed levels + silent       |
 | Structured data           | Yes (metadata)          | Yes (data parameter)          |
@@ -33,10 +33,10 @@ logger.info("server started", { port: 3000 })
 logger.error("request failed", { error: err.message })
 ```
 
-### After (@beorn/logger)
+### After (decant)
 
 ```typescript
-import { createLogger } from "@beorn/logger"
+import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 
@@ -56,7 +56,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-// @beorn/logger
+// decant
 const log = createLogger("myapp")
 // Level, format, and output configured via env vars or API:
 // LOG_LEVEL=info, LOG_FORMAT=json, NODE_ENV=production
@@ -70,7 +70,7 @@ logger.info("starting", { port: 3000 })
 logger.info({ message: "starting", port: 3000 })
 logger.error("failed", { error: err.message, stack: err.stack })
 
-// @beorn/logger — message + optional data
+// decant — message + optional data
 log.info?.("starting", { port: 3000 })
 log.error?.(err) // Error: auto-extracts message, stack, code
 log.error?.(err, { context: "startup" }) // With extra context
@@ -78,7 +78,7 @@ log.error?.(err, { context: "startup" }) // With extra context
 
 ### Levels
 
-| Winston Level | @beorn/logger Level     |
+| Winston Level | decant Level     |
 | ------------- | ----------------------- |
 | error         | error                   |
 | warn          | warn                    |
@@ -95,7 +95,7 @@ log.error?.(err, { context: "startup" }) // With extra context
 const childLogger = logger.child({ requestId: "abc" })
 childLogger.info("processing")
 
-// @beorn/logger — two patterns
+// decant — two patterns
 const child = log.child({ requestId: "abc" }) // Context fields
 const dbLog = log.logger("db") // Namespace: myapp:db
 ```
@@ -108,8 +108,8 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), new winston.transports.File({ filename: "app.log" })],
 })
 
-// @beorn/logger writers
-import { addWriter, createFileWriter } from "@beorn/logger"
+// decant writers
+import { addWriter, createFileWriter } from "decant"
 
 // Console output is built-in (default)
 // File output via createFileWriter
@@ -134,7 +134,7 @@ const logger = winston.createLogger({
   ),
 })
 
-// @beorn/logger — built-in formats
+// decant — built-in formats
 // Development: colorized console with timestamp (default)
 // Production: JSON (NODE_ENV=production or LOG_FORMAT=json)
 // No configuration needed
@@ -148,7 +148,7 @@ logger.profile("operation")
 await doWork()
 logger.profile("operation") // logs duration
 
-// @beorn/logger (built-in spans)
+// decant (built-in spans)
 {
   using span = log.span("operation")
   await doWork()
@@ -158,7 +158,7 @@ logger.profile("operation") // logs duration
 
 ## Environment Variables
 
-| Winston                  | @beorn/logger         | Effect             |
+| Winston                  | decant         | Effect             |
 | ------------------------ | --------------------- | ------------------ |
 | N/A (configured in code) | `LOG_LEVEL=debug`     | Set minimum level  |
 | N/A                      | `DEBUG=myapp`         | Namespace filter   |
@@ -168,8 +168,8 @@ logger.profile("operation") // logs duration
 
 ## Migration Checklist
 
-1. **Update dependencies**: `bun remove winston` and `bun add @beorn/logger`
-2. **Update imports**: `import winston from "winston"` → `import { createLogger } from "@beorn/logger"`
+1. **Update dependencies**: `bun remove winston` and `bun add decant`
+2. **Update imports**: `import winston from "winston"` → `import { createLogger } from "decant"`
 3. **Replace `createLogger()`**: Winston's options → `createLogger("name")` + env vars
 4. **Convert transports** to `addWriter()` + optional `createFileWriter()`
 5. **Remove format configuration** — built-in formats handle dev/prod automatically

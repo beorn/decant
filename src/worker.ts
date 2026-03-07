@@ -1,7 +1,7 @@
 /**
  * Worker Thread Logger/Console Forwarding
  *
- * Provides utilities to forward @beorn/logger and console.* output from worker threads
+ * Provides utilities to forward decant and console.* output from worker threads
  * to the main thread, ensuring proper integration with DEBUG_LOG and log files.
  *
  * ## Full Logger Forwarding (Recommended)

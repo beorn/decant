@@ -1,4 +1,4 @@
-# Why @beorn/logger?
+# Why decant?
 
 ## The Problem
 
@@ -13,7 +13,7 @@ log.debug(`state: ${JSON.stringify(computeExpensiveState())}`)
 
 ## The Solution
 
-@beorn/logger uses optional chaining to skip argument evaluation entirely:
+decant uses optional chaining to skip argument evaluation entirely:
 
 ```typescript
 log.debug?.(`state: ${JSON.stringify(computeExpensiveState())}`)
@@ -36,7 +36,7 @@ For cheap arguments the overhead is ~0.2ns -- negligible. For expensive argument
 
 ## Compared to Others
 
-| Feature            | @beorn/logger | Pino  | Winston | debug |
+| Feature            | decant | Pino  | Winston | debug |
 | ------------------ | ------------- | ----- | ------- | ----- |
 | Zero-cost disabled | `?.` (22x)    | noop  | noop    | check |
 | Built-in spans     | Yes           | No    | No      | No    |

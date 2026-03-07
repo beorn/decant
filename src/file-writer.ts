@@ -1,5 +1,5 @@
 /**
- * File writer for @beorn/logger — Node.js/Bun only.
+ * File writer for decant — Node.js/Bun only.
  *
  * Separated from core logger to allow tree-shaking in browser bundles.
  * Uses dynamic import("node:fs") to avoid static dependency on Node APIs.

@@ -46,7 +46,7 @@ Create a buffered file writer that flushes automatically.
 ### Example
 
 ```typescript
-import { createFileWriter, addWriter } from "@beorn/logger"
+import { createFileWriter, addWriter } from "decant"
 
 const writer = createFileWriter("/tmp/app.log", {
   bufferSize: 8192,

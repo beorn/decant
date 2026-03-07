@@ -1,10 +1,10 @@
 # Comparison with Other Loggers
 
-How @beorn/logger compares to popular Node.js logging libraries.
+How decant compares to popular Node.js logging libraries.
 
 ## Feature Comparison Table
 
-| Feature                | @beorn/logger | Pino    | Winston   | Bunyan    | debug     |
+| Feature                | decant | Pino    | Winston   | Bunyan    | debug     |
 | ---------------------- | ------------- | ------- | --------- | --------- | --------- |
 | **Log Levels**         | Yes (5)       | Yes (6) | Yes (7)   | Yes (6)   | No        |
 | **Structured Logging** | Yes           | Yes     | Yes       | Yes       | No        |
@@ -31,7 +31,7 @@ How @beorn/logger compares to popular Node.js logging libraries.
 
 ### Differences
 
-| Aspect             | Pino                           | @beorn/logger                      |
+| Aspect             | Pino                           | decant                      |
 | ------------------ | ------------------------------ | ---------------------------------- |
 | Zero-cost disabled | Noop function (args evaluated) | Optional chaining (args skipped)   |
 | Spans              | External (pino-opentelemetry)  | Built-in                           |
@@ -47,7 +47,7 @@ How @beorn/logger compares to popular Node.js logging libraries.
 - You need custom serializers for complex objects
 - You're building a large production system with multiple log destinations
 
-**Choose @beorn/logger if:**
+**Choose decant if:**
 
 - You want zero-cost disabled logging via optional chaining
 - You need built-in span timing
@@ -63,8 +63,8 @@ const log = pino({ level: "debug" })
 const child = log.child({ requestId: "123" })
 child.info({ user: "alice" }, "logged in")
 
-// @beorn/logger
-import { createLogger } from "@beorn/logger"
+// decant
+import { createLogger } from "decant"
 const log = createLogger("myapp")
 const child = log.logger("request", { requestId: "123" })
 child.info("logged in", { user: "alice" })
@@ -84,7 +84,7 @@ child.info("logged in", { user: "alice" })
 
 ### Differences
 
-| Aspect        | Winston                | @beorn/logger       |
+| Aspect        | Winston                | decant       |
 | ------------- | ---------------------- | ------------------- |
 | Philosophy    | Flexible, configurable | Simple, opinionated |
 | Transports    | 10+ built-in           | stdout only         |
@@ -101,7 +101,7 @@ child.info("logged in", { user: "alice" })
 - You need custom formatters and filters
 - You have complex logging requirements
 
-**Choose @beorn/logger if:**
+**Choose decant if:**
 
 - You want minimal configuration
 - Performance is critical
@@ -120,8 +120,8 @@ const log = winston.createLogger({
 })
 log.info("starting", { port: 3000 })
 
-// @beorn/logger
-import { createLogger } from "@beorn/logger"
+// decant
+import { createLogger } from "decant"
 const log = createLogger("myapp")
 log.info("starting", { port: 3000 })
 ```
@@ -140,7 +140,7 @@ log.info("starting", { port: 3000 })
 
 ### Differences
 
-| Aspect        | Bunyan                 | @beorn/logger               |
+| Aspect        | Bunyan                 | decant               |
 | ------------- | ---------------------- | --------------------------- |
 | Output Format | JSON only              | Console (dev) / JSON (prod) |
 | CLI Tools     | bunyan CLI for viewing | None                        |
@@ -156,7 +156,7 @@ log.info("starting", { port: 3000 })
 - You need multiple output streams
 - JSON-only output is fine for development
 
-**Choose @beorn/logger if:**
+**Choose decant if:**
 
 - You want readable console output in development
 - You need built-in spans
@@ -171,8 +171,8 @@ const log = bunyan.createLogger({ name: "myapp" })
 const child = log.child({ requestId: "123" })
 child.info({ user: "alice" }, "logged in")
 
-// @beorn/logger
-import { createLogger } from "@beorn/logger"
+// decant
+import { createLogger } from "decant"
 const log = createLogger("myapp")
 const child = log.logger("request", { requestId: "123" })
 child.info("logged in", { user: "alice" })
@@ -192,7 +192,7 @@ child.info("logged in", { user: "alice" })
 
 ### Differences
 
-| Aspect        | debug             | @beorn/logger     |
+| Aspect        | debug             | decant     |
 | ------------- | ----------------- | ----------------- |
 | Log Levels    | No (on/off)       | Yes (5 levels)    |
 | Output Format | printf-style      | Structured JSON   |
@@ -208,7 +208,7 @@ child.info("logged in", { user: "alice" })
 - You don't need log levels
 - You don't need structured data
 
-**Choose @beorn/logger if:**
+**Choose decant if:**
 
 - You need log levels
 - You need structured data
@@ -223,8 +223,8 @@ import createDebug from "debug"
 const debug = createDebug("myapp")
 debug("user %s logged in", username)
 
-// @beorn/logger
-import { createLogger } from "@beorn/logger"
+// decant
+import { createLogger } from "decant"
 const log = createLogger("myapp")
 log.info("user logged in", { username })
 ```
@@ -233,7 +233,7 @@ See [migration-from-debug.md](./migration-from-debug.md) for a detailed migratio
 
 ---
 
-## Unique Features of @beorn/logger
+## Unique Features of decant
 
 ### 1. Zero-cost Disabled Logging
 
@@ -243,7 +243,7 @@ Optional chaining skips argument evaluation entirely:
 // Other loggers - args always evaluated
 pino.debug(`expensive: ${computeState()}`) // computeState() runs even if disabled
 
-// @beorn/logger - args skipped when disabled
+// decant - args skipped when disabled
 log.debug?.(`expensive: ${computeState()}`) // computeState() NOT called if disabled
 ```
 
@@ -305,11 +305,11 @@ NODE_ENV=production bun run app
 
 | Use Case                                | Recommended            |
 | --------------------------------------- | ---------------------- |
-| High-performance with optional chaining | @beorn/logger          |
-| Built-in span timing                    | @beorn/logger          |
+| High-performance with optional chaining | decant          |
+| Built-in span timing                    | decant          |
 | Multiple transports                     | Pino or Winston        |
 | Extensive configuration                 | Winston                |
 | JSON CLI tools                          | Bunyan                 |
 | Simple debugging only                   | debug                  |
-| Minimal bundle size                     | debug or @beorn/logger |
-| TypeScript-first                        | @beorn/logger or Pino  |
+| Minimal bundle size                     | debug or decant |
+| TypeScript-first                        | decant or Pino  |

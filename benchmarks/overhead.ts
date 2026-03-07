@@ -1,5 +1,5 @@
 /**
- * @beorn/logger Benchmark Suite
+ * decant Benchmark Suite
  *
  * Compares zero-overhead disabled logging and enabled logging performance
  * against popular alternatives: pino, winston, debug.
@@ -75,7 +75,7 @@ const noopStream = () =>
     },
   })
 
-// ── @beorn/logger setup ──────────────────────────────────────────────────────
+// ── decant setup ──────────────────────────────────────────────────────
 
 const beornLog = createLogger("bench")
 // Route all output to noop writer, suppress console
@@ -154,7 +154,7 @@ const noop = (): void => {}
 
 const N = 10_000_000
 
-console.log("@beorn/logger Benchmark Suite")
+console.log("decant Benchmark Suite")
 console.log(`Iterations: ${(N / 1e6).toFixed(0)}M per test`)
 console.log(`Runtime: Bun ${Bun.version}`)
 console.log(`Platform: ${process.platform} ${process.arch}`)

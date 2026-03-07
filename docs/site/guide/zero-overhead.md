@@ -47,7 +47,7 @@ log.trace?.(() => `verbose: ${expensiveComputation()}`, { extra: "data" })
 The logger responds to level changes in real-time:
 
 ```typescript
-import { createLogger, setLogLevel } from "@beorn/logger"
+import { createLogger, setLogLevel } from "decant"
 
 const log = createLogger("myapp")
 

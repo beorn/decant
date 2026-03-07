@@ -3,7 +3,7 @@ import { defineConfig } from "vitepress"
 export default defineConfig({
   title: "decant",
   description: "Clarity without the clutter. Ergonomic unified logs, spans, and debugs for modern TypeScript.",
-  base: "/logger/",
+  base: "/decant/",
 
   themeConfig: {
     siteTitle: "decant",
@@ -21,7 +21,7 @@ export default defineConfig({
           items: [
             { text: "The Journey", link: "/guide/journey" },
             { text: "Getting Started", link: "/guide/getting-started" },
-            { text: "Why @beorn/logger?", link: "/guide/why" },
+            { text: "Why decant?", link: "/guide/why" },
           ],
         },
         {

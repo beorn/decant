@@ -10,8 +10,8 @@ import createDebug from "debug"
 const debug = createDebug("myapp")
 debug("user %s logged in from %s", username, ip)
 
-// After (@beorn/logger)
-import { createLogger } from "@beorn/logger"
+// After (decant)
+import { createLogger } from "decant"
 const log = createLogger("myapp")
 log.info?.("user logged in", { username, ip })
 ```

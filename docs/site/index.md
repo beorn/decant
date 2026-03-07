@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "@beorn/logger"
+  name: "decant"
   text: "Clarity without the clutter"
   tagline: "Ergonomic unified logs, spans, and debugs for modern TypeScript. ~3KB, one dependency, zero-overhead disabled logging via optional chaining."
   actions:
@@ -31,11 +31,11 @@ features:
 ## Quick Start
 
 ```bash
-bun add @beorn/logger
+bun add decant
 ```
 
 ```typescript
-import { createLogger } from "@beorn/logger"
+import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 

@@ -1,5 +1,5 @@
 /**
- * @beorn/logger Test Suite
+ * decant Test Suite
  *
  * Tests for the logger-first observability system.
  */

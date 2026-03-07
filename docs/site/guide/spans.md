@@ -27,7 +27,7 @@ TRACE=myapp,other bun run app    # Multiple namespaces
 ```
 
 ```typescript
-import { enableSpans, setTraceFilter } from "@beorn/logger"
+import { enableSpans, setTraceFilter } from "decant"
 
 enableSpans() // All spans
 setTraceFilter(["myapp:db"]) // Only db spans

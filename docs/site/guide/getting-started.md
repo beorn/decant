@@ -3,13 +3,13 @@
 ## Installation
 
 ```bash
-bun add @beorn/logger    # or: npm install @beorn/logger
+bun add decant    # or: npm install decant
 ```
 
 ## Create a Logger
 
 ```typescript
-import { createLogger } from "@beorn/logger"
+import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 ```
@@ -27,7 +27,7 @@ log.warn?.("rate limited", { remaining: 0, resetIn: 60 })
 log.error?.(new Error("connection lost"))
 ```
 
-Notice the `?.` -- this is intentional. When a log level is disabled, the method returns `undefined`, and optional chaining skips the entire call including argument evaluation. This is the core performance feature of @beorn/logger.
+Notice the `?.` -- this is intentional. When a log level is disabled, the method returns `undefined`, and optional chaining skips the entire call including argument evaluation. This is the core performance feature of decant.
 
 ## Log Levels
 
@@ -50,7 +50,7 @@ LOG_LEVEL=error bun run app     # Only errors
 ```
 
 ```typescript
-import { setLogLevel } from "@beorn/logger"
+import { setLogLevel } from "decant"
 setLogLevel("debug")
 ```
 

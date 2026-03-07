@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API documentation for @beorn/logger.
+Complete API documentation for decant.
 
 ## Table of Contents
 
@@ -383,7 +383,7 @@ TypeScript enforces `?.` at compile time -- you can't call `log.debug()` without
 For testing and analysis, spans can be collected programmatically.
 
 ```typescript
-import { startCollecting, stopCollecting, getCollectedSpans, clearCollectedSpans, resetIds } from "@beorn/logger"
+import { startCollecting, stopCollecting, getCollectedSpans, clearCollectedSpans, resetIds } from "decant"
 
 resetIds() // Reset ID counters for deterministic tests
 startCollecting() // Enable span collection

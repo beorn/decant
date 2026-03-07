@@ -1,4 +1,4 @@
-# Contributing to @beorn/logger
+# Contributing to decant
 
 ## Development Setup
 

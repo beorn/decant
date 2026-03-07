@@ -2,7 +2,7 @@
 
 See the [full API reference](https://github.com/beorn/decant/blob/main/docs/api-reference.md) for complete documentation.
 
-## Exports from `@beorn/logger`
+## Exports from `decant`
 
 ### Core
 
@@ -46,7 +46,7 @@ See the [full API reference](https://github.com/beorn/decant/blob/main/docs/api-
 | `OutputMode`        | `"console" \| "stderr" \| "writers-only"` |
 | `FileWriter`        | `{ write, flush, close }`                 |
 
-## Exports from `@beorn/logger/worker`
+## Exports from `decant/worker`
 
 | Export                                        | Description                       |
 | --------------------------------------------- | --------------------------------- |

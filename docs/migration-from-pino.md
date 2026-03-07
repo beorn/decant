@@ -1,10 +1,10 @@
 # Migration from Pino
 
-Step-by-step guide for migrating from Pino to @beorn/logger.
+Step-by-step guide for migrating from Pino to decant.
 
 ## Why Migrate?
 
-| Feature                   | Pino                   | @beorn/logger                 |
+| Feature                   | Pino                   | decant                 |
 | ------------------------- | ---------------------- | ----------------------------- |
 | Log levels                | Yes (7 levels)         | Yes (5 levels + silent)       |
 | Structured data           | Yes (JSON)             | Yes (JSON + pretty console)   |
@@ -30,10 +30,10 @@ logger.info({ port: 3000 }, "server started")
 child.debug({ query: sql, params }, "executing query")
 ```
 
-### After (@beorn/logger)
+### After (decant)
 
 ```typescript
-import { createLogger } from "@beorn/logger"
+import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 const dbLog = log.logger("db")
@@ -52,7 +52,7 @@ const logger = pino()
 const logger = pino({ level: "debug" })
 const logger = pino({ name: "myapp" })
 
-// @beorn/logger
+// decant
 const log = createLogger("myapp")
 setLogLevel("debug") // Global level
 ```
@@ -66,7 +66,7 @@ logger.info("simple message")
 logger.error({ err }, "request failed")
 logger.error(err, "request failed") // Error serialization
 
-// @beorn/logger — message first, then data
+// decant — message first, then data
 log.info?.("user logged in", { userId: 42 })
 log.info?.("simple message")
 log.error?.(err, { context: "request" }) // Error object handled
@@ -80,7 +80,7 @@ log.error?.(err) // Extracts message, stack, code
 const child = logger.child({ requestId: "abc" })
 child.info("handling request")
 
-// @beorn/logger — two patterns
+// decant — two patterns
 // 1. Context fields (like Pino's child)
 const child = log.child({ requestId: "abc" })
 child.info?.("handling request") // includes requestId
@@ -91,7 +91,7 @@ const dbLog = log.logger("db") // name: "myapp:db"
 
 ### Levels
 
-| Pino Level | Value | @beorn/logger Level       |
+| Pino Level | Value | decant Level       |
 | ---------- | ----: | ------------------------- |
 | trace      |    10 | trace                     |
 | debug      |    20 | debug                     |
@@ -112,8 +112,8 @@ const logger = pino({
   },
 })
 
-// @beorn/logger writers
-import { addWriter, createFileWriter } from "@beorn/logger"
+// decant writers
+import { addWriter, createFileWriter } from "decant"
 
 const writer = createFileWriter("/tmp/app.log")
 addWriter((formatted) => writer.write(formatted))
@@ -130,7 +130,7 @@ const logger = pino({
   },
 })
 
-// @beorn/logger — handle in data parameter
+// decant — handle in data parameter
 log.info?.("request", {
   method: req.method,
   url: req.url,
@@ -147,7 +147,7 @@ const start = Date.now()
 await operation()
 logger.info({ duration: Date.now() - start }, "operation complete")
 
-// @beorn/logger (built-in spans)
+// decant (built-in spans)
 {
   using span = log.span("operation")
   await operation()
@@ -158,7 +158,7 @@ logger.info({ duration: Date.now() - start }, "operation complete")
 
 ## Environment Variables
 
-| Pino                  | @beorn/logger         | Effect                                |
+| Pino                  | decant         | Effect                                |
 | --------------------- | --------------------- | ------------------------------------- |
 | `LOG_LEVEL=debug`     | `LOG_LEVEL=debug`     | Set minimum level                     |
 | N/A                   | `DEBUG=myapp`         | Namespace filter (auto-enables debug) |
@@ -168,9 +168,9 @@ logger.info({ duration: Date.now() - start }, "operation complete")
 
 ## Migration Checklist
 
-1. **Update dependencies**: `bun remove pino pino-pretty && bun add @beorn/logger`
-2. **Update imports**: `import pino from "pino"` → `import { createLogger } from "@beorn/logger"`
-3. **Swap argument order**: Pino uses `(data, message)`, @beorn/logger uses `(message, data)`
+1. **Update dependencies**: `bun remove pino pino-pretty && bun add decant`
+2. **Update imports**: `import pino from "pino"` → `import { createLogger } from "decant"`
+3. **Swap argument order**: Pino uses `(data, message)`, decant uses `(message, data)`
 4. **Replace `logger.child()`** with `.child()` (context) or `.logger()` (namespace)
 5. **Convert transports** to writers via `addWriter()`
 6. **Add `?.`** to all log calls for zero-overhead disabled logging

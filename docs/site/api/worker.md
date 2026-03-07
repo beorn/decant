@@ -1,6 +1,6 @@
 # Worker Thread API
 
-Import from `@beorn/logger/worker`.
+Import from `decant/worker`.
 
 ## Worker Side
 

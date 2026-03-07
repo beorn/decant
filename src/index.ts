@@ -1,5 +1,5 @@
 /**
- * @beorn/logger - Structured logging with spans
+ * decant - Structured logging with spans
  *
  * Full entry point for Node.js, Bun, and Deno.
  * Browser environments use index.browser.ts via the "browser" export condition.

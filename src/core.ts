@@ -1,5 +1,5 @@
 /**
- * @beorn/logger - Structured logging with spans
+ * decant - Structured logging with spans
  *
  * Logger-first architecture: Span = Logger + Duration
  *
