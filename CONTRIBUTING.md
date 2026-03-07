@@ -15,7 +15,7 @@ bun run typecheck   # Type check
 - TypeScript strict mode
 - ESM imports only (`import`/`export`, never `require`)
 - Factory functions over classes
-- Minimal dependencies (only `picocolors` for terminal colors)
+- Zero external dependencies
 
 ## Testing
 

@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "decant"
   text: "Clarity without the clutter"
-  tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. One dependency, zero-overhead via optional chaining."
+  tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. Zero dependencies, zero-overhead via optional chaining."
   actions:
     - theme: brand
       text: The Journey
@@ -21,11 +21,11 @@ features:
   - title: "Distributed Tracing"
     details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. All integrated — no separate SDK to wire up."
   - title: Zero-Overhead via ?.
-    details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. 22x faster than noop functions for expensive arguments."
-  - title: ~3KB, One Dependency
-    details: "Just picocolors for terminal colors. Native TypeScript, ESM-only. Runs on Node, Bun, and Deno."
+    details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. Typically 10x+ faster for real-world logging with string interpolation and serialization."
+  - title: ~3KB, Zero Dependencies
+    details: "No external dependencies. Native TypeScript, ESM-only. Runs on Node, Bun, and Deno."
   - title: One Unified Pipeline
-    details: "Debug output, structured logs, and distributed traces share the same namespace tree, the same output pipeline, and the same zero-overhead pattern."
+    details: "Most projects wire together debug, pino, and OpenTelemetry — three configs, three formats, three APIs. decant integrates all three: one namespace tree, one output pipeline, one import instead of three."
 ---
 
 ## Quick Start

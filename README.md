@@ -1,10 +1,12 @@
 # decant
 
+**Clarity without the clutter.**
+
 [![Tests](https://github.com/beorn/decant/actions/workflows/test.yml/badge.svg)](https://github.com/beorn/decant/actions/workflows/test.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Clarity without the clutter. Debug logging, structured logs, and distributed tracing — integrated into one **~3KB** library with a single API. One dependency ([picocolors](https://github.com/alexeyraspopov/picocolors)).
+Debug logging, structured logs, and distributed tracing — integrated into one **~3KB** library with a single API. Zero dependencies.
 
 Most projects wire together three separate tools that don't talk to each other: **debug** for conditional output, **pino/winston** for production logs, **OpenTelemetry** for tracing. decant integrates all three into one unified system — same namespace tree, same output pipeline, same `?.` zero-overhead pattern. Every logger is a potential span: call `.span()` and it becomes one, with automatic timing, parent-child tracking, and trace IDs. Nothing to sync, nothing to configure separately.
 
@@ -39,28 +41,21 @@ log.error?.(new Error("connection lost"))
 
 ## Why Another Logger?
 
-Most loggers waste work when logging is disabled:
+Beyond the integration story above, most loggers also waste work when logging is disabled. Even with a noop function, arguments are still evaluated:
 
 ```typescript
-// Pino, Winston, Bunyan -- args are ALWAYS evaluated
+// Traditional — args are ALWAYS evaluated, even when debug is off
 log.debug(`state: ${JSON.stringify(computeExpensiveState())}`)
-// computeExpensiveState() runs even when debug is off
 ```
 
-decant uses optional chaining to skip argument evaluation entirely:
+decant uses optional chaining to skip the entire call — including argument evaluation:
 
 ```typescript
-// decant -- args are NOT evaluated when disabled
+// decant — args are NOT evaluated when disabled
 log.debug?.(`state: ${JSON.stringify(computeExpensiveState())}`)
-// computeExpensiveState() never runs when debug is off -- 22x faster
 ```
 
-| Scenario                    | Traditional (noop)     | Optional chaining (`?.`) |
-| --------------------------- | ---------------------- | ------------------------ |
-| Cheap args disabled         | 2168M ops/s (0.5ns)    | 1406M ops/s (0.7ns)      |
-| **Expensive args disabled** | **17M ops/s (57.6ns)** | **408M ops/s (2.5ns)**   |
-
-For cheap arguments the difference is negligible (~0.2ns). For expensive arguments -- string interpolation, JSON serialization, state computation -- optional chaining is **22x faster**.
+For trivial arguments the difference is negligible. But for real-world logging — string interpolation, JSON serialization, state snapshots — optional chaining is typically **10x+ faster** because it skips the work entirely. The more expensive your arguments, the bigger the win.
 
 ## Features
 

@@ -200,4 +200,4 @@ Normally, you'd pull in one library for logs, another for debug prints, a tracin
 
 All sharing one namespace tree. All respecting the same log levels. All using the same `?.` pattern — disabled calls are skipped entirely, including argument evaluation. There when you need it, invisible when you don't.
 
-~3KB. One dependency (picocolors). Modern TypeScript.
+~3KB. Zero dependencies. Modern TypeScript.
