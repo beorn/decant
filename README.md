@@ -4,9 +4,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Clarity without the clutter. Ergonomic unified logs, spans, and debugs for modern TypeScript. **~3KB**, one dependency ([picocolors](https://github.com/alexeyraspopov/picocolors)).
+Clarity without the clutter. One library that replaces your debug logger, your structured logger, and your tracing SDK. **~3KB**, one dependency ([picocolors](https://github.com/alexeyraspopov/picocolors)).
 
-The core idea: every logger is a potential span. Call `.span()` and it becomes one -- with automatic timing, parent-child tracking, and trace IDs. No separate tracing library needed. Read **[The Journey](docs/guide.md)** for the full story.
+Most projects wire together three separate tools: **debug** for conditional verbose output, **pino/winston** for structured production logs, and **OpenTelemetry** for distributed tracing. decant unifies all three — same namespace tree, same output pipeline, same `?.` zero-overhead pattern. Every logger is a potential span: call `.span()` and it becomes one, with automatic timing, parent-child tracking, and trace IDs.
+
+Read **[The Journey](docs/guide.md)** for the full story.
 
 ## Install
 
@@ -21,6 +23,7 @@ import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 
+// ?. skips the entire call — including argument evaluation — when the level is disabled (near-zero cost)
 log.info?.("server started", { port: 3000 })
 log.debug?.("cache hit", { key: "user:42" })
 log.error?.(new Error("connection lost"))
