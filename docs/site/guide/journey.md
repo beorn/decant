@@ -201,9 +201,3 @@ Normally, you'd pull in one library for logs, another for debug prints, a tracin
 All sharing one namespace tree. All respecting the same log levels. All using the same `?.` pattern — disabled calls are skipped entirely, including argument evaluation. There when you need it, invisible when you don't.
 
 ~3KB. One dependency (picocolors). Modern TypeScript.
-
-## The Road Ahead
-
-### LOG_FILTER (Next)
-
-Namespace visibility filter independent of log level. `LOG_FILTER=myapp:db` restricts output to matching namespaces without changing the level floor. Makes `DEBUG=myapp:db` equivalent to `LOG_LEVEL=debug LOG_FILTER=myapp:db` — clean separation of concerns.

@@ -203,21 +203,3 @@ At this point you've replaced that patchwork with a single library:
 All sharing one namespace tree. All respecting the same log levels. All using the same `?.` pattern — disabled calls are skipped entirely, including argument evaluation. There when you need it, invisible when you don't.
 
 ~3KB. One dependency (picocolors). Modern TypeScript.
-
-## The Road Ahead
-
-### LOG_FILTER (Next)
-
-Namespace visibility filter independent of log level. `LOG_FILTER=myapp:db` restricts output to matching namespaces without changing the level floor. Makes `DEBUG=myapp:db` equivalent to `LOG_LEVEL=debug LOG_FILTER=myapp:db` — clean separation of concerns.
-
-### Universal Runtime (Phase 1)
-
-Browser, Deno, Cloudflare Workers, serverless. The core is already platform-neutral — only a handful of Node-specific calls (process.env, fs, process.stderr) remain to be abstracted. No architectural changes.
-
-### Distributed Tracing (Phase 2)
-
-W3C trace IDs, `traceparent()` header utility, `AsyncLocalStorage` auto-propagation so you don't need to pass loggers manually, OTel-compatible span export via writers.
-
-### Metrics (Phase 3)
-
-Counter, gauge, histogram — in the same namespace tree, with the same `?.` zero-overhead pattern, the same writer system. `DEBUG=myapp:db:*` would control logs, spans, AND metrics for the database layer.

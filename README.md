@@ -64,128 +64,21 @@ For cheap arguments the difference is negligible (~0.2ns). For expensive argumen
 
 ## Features
 
-### Namespace Hierarchy
+- **Namespace hierarchy** — organize logs with `:` separators. `log.logger("db")` creates `myapp:db`. Children inherit parent context.
+- **Spans** — time any operation with `using span = log.span("name")`. Automatic duration, parent-child tracking, and trace IDs. *(Uses TC39 [Explicit Resource Management](https://github.com/tc39/proposal-explicit-resource-management); call `span.end()` manually if your runtime doesn't support `using` yet.)*
+- **Lazy messages** — `log.debug?.(() => expensiveString())` skips the function entirely when disabled.
+- **Child context** — `log.child({ requestId })` adds structured fields to every message in the chain.
+- **Dual output** — pretty console in development, structured JSON in production (`NODE_ENV=production` or `LOG_FORMAT=json`).
+- **File writer** — `addWriter()` + `createFileWriter()` for buffered file output with auto-flush.
+- **Worker threads** — forward logs from workers to the main thread with full type safety (`decant/worker`).
+- **Drop-in debug replacement** — reads `DEBUG=myapp:*` just like the debug package. Swap your imports in minutes.
 
-Organize logs with `:` separators. Child loggers inherit parent context.
+## Documentation
 
-```typescript
-const log = createLogger("myapp", { version: "2.1" })
-const db = log.logger("db") // myapp:db
-const cache = log.logger("cache") // myapp:cache
-
-db.info?.("connected")
-// 14:32:15 INFO myapp:db connected {version: "2.1"}
-```
-
-### Spans
-
-Time any operation with `using`. Spans are loggers with duration tracking, parent-child relationships, and trace IDs.
-
-```typescript
-{
-  using span = log.span("import", { file: "data.csv" })
-  span.info?.("parsing rows")
-  span.spanData.rowCount = await importFile()
-}
-// SPAN myapp:import (1234ms) {rowCount: 500, file: "data.csv"}
-```
-
-Spans nest automatically:
-
-```typescript
-{
-  using request = log.span("request", { path: "/api/users" })
-  {
-    using db = request.span("db:query")
-    // db.spanData.traceId === request.spanData.traceId
-    await fetchUsers()
-  }
-  {
-    using cache = request.span("cache:set")
-    await cacheResults()
-  }
-}
-```
-
-### Lazy Messages
-
-Pass a function when the message itself is expensive to construct:
-
-```typescript
-log.debug?.(() => `tree: ${JSON.stringify(buildDebugTree())}`)
-// Function only called when debug is enabled
-```
-
-### Child Context
-
-Create loggers with structured context that appears in every message:
-
-```typescript
-const reqLog = log.child({ requestId: "abc-123", userId: 42 })
-reqLog.info?.("handling request")
-// 14:32:15 INFO myapp handling request {requestId: "abc-123", userId: 42}
-
-// Context accumulates through the chain
-const dbLog = reqLog.child({ pool: "primary" })
-// Has: requestId, userId, pool
-```
-
-### Dual Output Format
-
-Pretty console in development, structured JSON in production:
-
-```bash
-# Development (default)
-bun run app
-# 14:32:15 INFO myapp server started {port: 3000}
-
-# Production
-NODE_ENV=production bun run app
-# {"time":"2026-01-15T14:32:15.123Z","level":"info","name":"myapp","msg":"server started","port":3000}
-
-# Explicit JSON
-LOG_FORMAT=json bun run app
-```
-
-### File Writer
-
-Buffer log output to files with automatic flushing:
-
-```typescript
-import { createFileWriter, addWriter } from "decant"
-
-const writer = createFileWriter("/tmp/app.log", {
-  bufferSize: 4096, // Flush when buffer exceeds 4KB
-  flushInterval: 100, // Or every 100ms, whichever comes first
-})
-
-const unsubscribe = addWriter((formatted) => writer.write(formatted))
-
-// On shutdown:
-unsubscribe()
-writer.close()
-```
-
-### Worker Thread Support
-
-Forward logs from worker threads to the main thread:
-
-```typescript
-// Worker side
-import { createWorkerLogger } from "decant/worker"
-const log = createWorkerLogger(postMessage, "myapp:worker")
-
-log.info?.("processing", { file: "data.csv" })
-{
-  using span = log.span("parse")
-  span.spanData.lines = 100
-}
-
-// Main thread side
-import { createWorkerLogHandler } from "decant/worker"
-const handle = createWorkerLogHandler()
-worker.onmessage = (e) => handle(e.data)
-```
+- **[The Journey](docs/guide.md)** — progressive guide from first log to full observability
+- **[Full docs site](https://beorn.codes/decant/)** — guides, API reference, migration guides
+- [Comparison](docs/comparison.md) — vs Pino, Winston, Bunyan, debug
+- [Migration from debug](docs/migration-from-debug.md) — step-by-step migration guide
 
 ## Environment Variables
 
@@ -198,64 +91,20 @@ worker.onmessage = (e) => handle(e.data)
 | `TRACE_FORMAT` | json                                    | Force JSON for spans                    |
 | `NODE_ENV`     | production                              | Auto-enable JSON format                 |
 
-```bash
-LOG_LEVEL=debug bun run app              # Show debug and above
-DEBUG=myapp bun run app                  # Only myapp namespace (auto-enables debug level)
-DEBUG='myapp,-myapp:noisy' bun run app   # Exclude noisy sub-namespace
-TRACE=1 bun run app                      # Enable all span output
-TRACE=myapp:db bun run app               # Spans for specific namespace only
-```
-
 ## API
 
-### Core
+| Function | Description |
+|----------|-------------|
+| `createLogger(name, props?)` | Create a logger (disabled levels return `undefined` for `?.`) |
+| `.trace?.()` / `.debug?.()` / `.info?.()` / `.warn?.()` / `.error?.()` | Log at level (message + optional data) |
+| `.logger(namespace)` | Create child logger with extended namespace |
+| `.span(namespace, props?)` | Create timed span (implements `Disposable`) |
+| `.child(context)` | Create child with structured context fields |
+| `addWriter(fn)` / `createFileWriter(path)` | Custom output writers |
+| `setLogLevel()` / `setLogFormat()` / `enableSpans()` | Runtime configuration |
+| `createWorkerLogger()` / `createWorkerLogHandler()` | Worker thread support (`decant/worker`) |
 
-| Function                                                 | Description                                                      |
-| -------------------------------------------------------- | ---------------------------------------------------------------- |
-| `createLogger(name, props?)`                             | Create a conditional logger (disabled levels return `undefined`) |
-| `setLogLevel(level)` / `getLogLevel()`                   | Set/get minimum log level                                        |
-| `setLogFormat(format)` / `getLogFormat()`                | Set/get output format (`"console"` or `"json"`)                  |
-| `enableSpans()` / `disableSpans()` / `spansAreEnabled()` | Control span output                                              |
-| `setTraceFilter(namespaces)` / `getTraceFilter()`        | Filter span output by namespace                                  |
-| `setDebugFilter(namespaces)` / `getDebugFilter()`        | Filter log output by namespace                                   |
-
-### Logger Methods
-
-| Method                          | Description                                 |
-| ------------------------------- | ------------------------------------------- |
-| `.trace?.(msg, data?)`          | Verbose debugging                           |
-| `.debug?.(msg, data?)`          | Debug information                           |
-| `.info?.(msg, data?)`           | Normal operation                            |
-| `.warn?.(msg, data?)`           | Recoverable issues                          |
-| `.error?.(msg \| Error, data?)` | Failures                                    |
-| `.logger(namespace?, props?)`   | Create child logger                         |
-| `.span(namespace?, props?)`     | Create timed span (implements `Disposable`) |
-| `.child(context)`               | Create child with context fields            |
-
-### Writers
-
-| Function                        | Description                                     |
-| ------------------------------- | ----------------------------------------------- |
-| `addWriter(fn)`                 | Add output writer, returns unsubscribe          |
-| `createFileWriter(path, opts?)` | Buffered file writer with auto-flush            |
-| `setOutputMode(mode)`           | `"console"`, `"stderr"`, or `"writers-only"`    |
-| `setSuppressConsole(bool)`      | Suppress console output (writers still receive) |
-
-### Worker Thread
-
-| Function                                      | Module                 | Description                             |
-| --------------------------------------------- | ---------------------- | --------------------------------------- |
-| `createWorkerLogger(postMessage, ns, props?)` | `decant/worker` | Logger that forwards to main thread     |
-| `createWorkerLogHandler(opts?)`               | `decant/worker` | Main thread handler for worker messages |
-| `forwardConsole(postMessage, ns?)`            | `decant/worker` | Forward `console.*` from worker         |
-
-## Documentation
-
-- **[The Journey](docs/guide.md)** -- Progressive guide from first log to full observability
-- [API Reference](docs/api-reference.md) -- Complete API documentation
-- [Comparison](docs/comparison.md) -- vs Pino, Winston, Bunyan, debug
-- [Migration from debug](docs/migration-from-debug.md) -- Step-by-step migration guide
-- [Conditional Logging Research](docs/conditional-logging-research.md) -- Benchmarks and design rationale
+See the [full API reference](docs/api-reference.md) for all functions and options.
 
 ## License
 
