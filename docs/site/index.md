@@ -39,7 +39,10 @@ import { createLogger } from "decant"
 
 const log = createLogger("myapp")
 
+// ?. skips the entire call — including argument evaluation — when the level is disabled (near-zero cost)
 log.info?.("server started", { port: 3000 })
+log.debug?.("cache hit", { key: "user:42" })
+log.error?.(new Error("connection lost"))
 
 // Spans time operations automatically
 {
@@ -47,5 +50,5 @@ log.info?.("server started", { port: 3000 })
   const users = await db.query("SELECT * FROM users")
   span.spanData.count = users.length
 }
-// SPAN myapp:db:query (45ms) {count: 100, table: "users"}
+// Output: SPAN myapp:db:query (45ms) {count: 100, table: "users"}
 ```
