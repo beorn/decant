@@ -1,17 +1,17 @@
 import { defineConfig } from "vitepress"
 
 export default defineConfig({
-  title: "decant",
+  title: "loggily",
   description: "Clarity without the clutter. Ergonomic unified logs, spans, and debugs for modern TypeScript.",
-  base: "/decant/",
+  base: "/loggily/",
 
   themeConfig: {
-    siteTitle: "decant",
+    siteTitle: "loggily",
 
     nav: [
       { text: "Guide", link: "/guide/journey" },
       { text: "API", link: "/api/" },
-      { text: "GitHub", link: "https://github.com/beorn/decant" },
+      { text: "GitHub", link: "https://github.com/beorn/loggily" },
     ],
 
     sidebar: {
@@ -21,7 +21,7 @@ export default defineConfig({
           items: [
             { text: "The Journey", link: "/guide/journey" },
             { text: "Getting Started", link: "/guide/getting-started" },
-            { text: "Why decant?", link: "/guide/why" },
+            { text: "Why loggily?", link: "/guide/why" },
           ],
         },
         {
@@ -51,7 +51,7 @@ export default defineConfig({
       ],
     },
 
-    socialLinks: [{ icon: "github", link: "https://github.com/beorn/decant" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/beorn/loggily" }],
 
     outline: { level: [2, 3] },
 

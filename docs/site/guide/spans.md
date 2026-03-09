@@ -27,7 +27,7 @@ TRACE=myapp,other bun run app    # Multiple namespaces
 ```
 
 ```typescript
-import { enableSpans, setTraceFilter } from "decant"
+import { enableSpans, setTraceFilter } from "loggily"
 
 enableSpans() // All spans
 setTraceFilter(["myapp:db"]) // Only db spans

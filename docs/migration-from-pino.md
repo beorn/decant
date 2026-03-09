@@ -1,10 +1,10 @@
 # Migration from Pino
 
-Step-by-step guide for migrating from Pino to decant.
+Step-by-step guide for migrating from Pino to loggily.
 
 ## Why Migrate?
 
-| Feature                   | Pino                   | decant                 |
+| Feature                   | Pino                   | loggily                       |
 | ------------------------- | ---------------------- | ----------------------------- |
 | Log levels                | Yes (7 levels)         | Yes (5 levels + silent)       |
 | Structured data           | Yes (JSON)             | Yes (JSON + pretty console)   |
@@ -30,10 +30,10 @@ logger.info({ port: 3000 }, "server started")
 child.debug({ query: sql, params }, "executing query")
 ```
 
-### After (decant)
+### After (loggily)
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 
 const log = createLogger("myapp")
 const dbLog = log.logger("db")
@@ -52,7 +52,7 @@ const logger = pino()
 const logger = pino({ level: "debug" })
 const logger = pino({ name: "myapp" })
 
-// decant
+// loggily
 const log = createLogger("myapp")
 setLogLevel("debug") // Global level
 ```
@@ -66,7 +66,7 @@ logger.info("simple message")
 logger.error({ err }, "request failed")
 logger.error(err, "request failed") // Error serialization
 
-// decant — message first, then data
+// loggily — message first, then data
 log.info?.("user logged in", { userId: 42 })
 log.info?.("simple message")
 log.error?.(err, { context: "request" }) // Error object handled
@@ -80,7 +80,7 @@ log.error?.(err) // Extracts message, stack, code
 const child = logger.child({ requestId: "abc" })
 child.info("handling request")
 
-// decant — two patterns
+// loggily — two patterns
 // 1. Context fields (like Pino's child)
 const child = log.child({ requestId: "abc" })
 child.info?.("handling request") // includes requestId
@@ -91,7 +91,7 @@ const dbLog = log.logger("db") // name: "myapp:db"
 
 ### Levels
 
-| Pino Level | Value | decant Level       |
+| Pino Level | Value | loggily Level             |
 | ---------- | ----: | ------------------------- |
 | trace      |    10 | trace                     |
 | debug      |    20 | debug                     |
@@ -112,8 +112,8 @@ const logger = pino({
   },
 })
 
-// decant writers
-import { addWriter, createFileWriter } from "decant"
+// loggily writers
+import { addWriter, createFileWriter } from "loggily"
 
 const writer = createFileWriter("/tmp/app.log")
 addWriter((formatted) => writer.write(formatted))
@@ -130,7 +130,7 @@ const logger = pino({
   },
 })
 
-// decant — handle in data parameter
+// loggily — handle in data parameter
 log.info?.("request", {
   method: req.method,
   url: req.url,
@@ -147,7 +147,7 @@ const start = Date.now()
 await operation()
 logger.info({ duration: Date.now() - start }, "operation complete")
 
-// decant (built-in spans)
+// loggily (built-in spans)
 {
   using span = log.span("operation")
   await operation()
@@ -158,7 +158,7 @@ logger.info({ duration: Date.now() - start }, "operation complete")
 
 ## Environment Variables
 
-| Pino                  | decant         | Effect                                |
+| Pino                  | loggily               | Effect                                |
 | --------------------- | --------------------- | ------------------------------------- |
 | `LOG_LEVEL=debug`     | `LOG_LEVEL=debug`     | Set minimum level                     |
 | N/A                   | `DEBUG=myapp`         | Namespace filter (auto-enables debug) |
@@ -168,9 +168,9 @@ logger.info({ duration: Date.now() - start }, "operation complete")
 
 ## Migration Checklist
 
-1. **Update dependencies**: `bun remove pino pino-pretty && bun add decant`
-2. **Update imports**: `import pino from "pino"` → `import { createLogger } from "decant"`
-3. **Swap argument order**: Pino uses `(data, message)`, decant uses `(message, data)`
+1. **Update dependencies**: `bun remove pino pino-pretty && bun add loggily`
+2. **Update imports**: `import pino from "pino"` → `import { createLogger } from "loggily"`
+3. **Swap argument order**: Pino uses `(data, message)`, loggily uses `(message, data)`
 4. **Replace `logger.child()`** with `.child()` (context) or `.logger()` (namespace)
 5. **Convert transports** to writers via `addWriter()`
 6. **Add `?.`** to all log calls for zero-overhead disabled logging

@@ -1,5 +1,5 @@
 /**
- * decant - Structured logging with spans
+ * loggily - Structured logging with spans
  *
  * Logger-first architecture: Span = Logger + Duration
  *

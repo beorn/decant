@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "decant"
+  name: "loggily"
   text: "Clarity without the clutter"
   tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. Zero dependencies, zero-overhead via optional chaining."
   actions:
@@ -11,7 +11,7 @@ hero:
       link: /guide/journey
     - theme: alt
       text: View on GitHub
-      link: https://github.com/beorn/decant
+      link: https://github.com/beorn/loggily
 
 features:
   - title: "Debug Logging"
@@ -25,17 +25,17 @@ features:
   - title: ~3KB, Zero Dependencies
     details: "No external dependencies. Native TypeScript, ESM-only. Runs on Node, Bun, and Deno."
   - title: One Unified Pipeline
-    details: "Most projects wire together debug, pino, and OpenTelemetry — three configs, three formats, three APIs. decant integrates all three: one namespace tree, one output pipeline, one import instead of three."
+    details: "Most projects wire together debug, pino, and OpenTelemetry — three configs, three formats, three APIs. loggily integrates all three: one namespace tree, one output pipeline, one import instead of three."
 ---
 
 ## Quick Start
 
 ```bash
-bun add decant
+bun add loggily
 ```
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 
 const log = createLogger("myapp")
 

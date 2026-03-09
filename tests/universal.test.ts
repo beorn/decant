@@ -1,5 +1,5 @@
 /**
- * Universal runtime compatibility tests for decant.
+ * Universal runtime compatibility tests for loggily.
  *
  * Verifies that the core logger works when Node.js globals (process, fs) are unavailable,
  * as they would be in browser/edge/Deno environments.

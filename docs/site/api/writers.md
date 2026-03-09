@@ -46,7 +46,7 @@ Create a buffered file writer that flushes automatically.
 ### Example
 
 ```typescript
-import { createFileWriter, addWriter } from "decant"
+import { createFileWriter, addWriter } from "loggily"
 
 const writer = createFileWriter("/tmp/app.log", {
   bufferSize: 8192,

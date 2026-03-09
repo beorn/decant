@@ -1,9 +1,9 @@
-# Contributing to decant
+# Contributing to loggily
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/beorn/decant.git
+git clone https://github.com/beorn/loggily.git
 cd logger
 bun install
 bun run test        # Run tests

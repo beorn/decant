@@ -47,7 +47,7 @@ log.trace?.(() => `verbose: ${expensiveComputation()}`, { extra: "data" })
 The logger responds to level changes in real-time:
 
 ```typescript
-import { createLogger, setLogLevel } from "decant"
+import { createLogger, setLogLevel } from "loggily"
 
 const log = createLogger("myapp")
 
@@ -84,4 +84,4 @@ log.debug?.("msg") // Correct
 
 The Proxy overhead (~1ns) comes from `createLogger()` wrapping the base logger. For logging operations this is negligible compared to the actual I/O.
 
-See [Conditional Logging Research](https://github.com/beorn/decant/blob/main/docs/conditional-logging-research.md) for methodology and external references.
+See [Conditional Logging Research](https://github.com/beorn/loggily/blob/main/docs/conditional-logging-research.md) for methodology and external references.

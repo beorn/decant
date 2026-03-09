@@ -3,13 +3,13 @@
 ## Installation
 
 ```bash
-bun add decant    # or: npm install decant
+bun add loggily    # or: npm install loggily
 ```
 
 ## Create a Logger
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 
 const log = createLogger("myapp")
 ```
@@ -27,7 +27,7 @@ log.warn?.("rate limited", { remaining: 0, resetIn: 60 })
 log.error?.(new Error("connection lost"))
 ```
 
-Notice the `?.` -- this is intentional. When a log level is disabled, the method returns `undefined`, and optional chaining skips the entire call including argument evaluation. This is the core performance feature of decant.
+Notice the `?.` -- this is intentional. When a log level is disabled, the method returns `undefined`, and optional chaining skips the entire call including argument evaluation. This is the core performance feature of loggily.
 
 ## Log Levels
 
@@ -50,7 +50,7 @@ LOG_LEVEL=error bun run app     # Only errors
 ```
 
 ```typescript
-import { setLogLevel } from "decant"
+import { setLogLevel } from "loggily"
 setLogLevel("debug")
 ```
 

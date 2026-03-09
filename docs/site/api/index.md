@@ -1,8 +1,8 @@
 # API Reference
 
-See the [full API reference](https://github.com/beorn/decant/blob/main/docs/api-reference.md) for complete documentation.
+See the [full API reference](https://github.com/beorn/loggily/blob/main/docs/api-reference.md) for complete documentation.
 
-## Exports from `decant`
+## Exports from `loggily`
 
 ### Core
 
@@ -46,7 +46,7 @@ See the [full API reference](https://github.com/beorn/decant/blob/main/docs/api-
 | `OutputMode`        | `"console" \| "stderr" \| "writers-only"` |
 | `FileWriter`        | `{ write, flush, close }`                 |
 
-## Exports from `decant/worker`
+## Exports from `loggily/worker`
 
 | Export                                        | Description                       |
 | --------------------------------------------- | --------------------------------- |

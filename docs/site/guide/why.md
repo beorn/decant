@@ -1,4 +1,4 @@
-# Why decant?
+# Why loggily?
 
 ## The Problem
 
@@ -13,7 +13,7 @@ log.debug(`state: ${JSON.stringify(computeExpensiveState())}`)
 
 ## The Solution
 
-decant uses optional chaining to skip argument evaluation entirely:
+loggily uses optional chaining to skip argument evaluation entirely:
 
 ```typescript
 log.debug?.(`state: ${JSON.stringify(computeExpensiveState())}`)
@@ -36,15 +36,15 @@ For cheap arguments the overhead is ~0.2ns -- negligible. For expensive argument
 
 ## Compared to Others
 
-| Feature            | decant | Pino  | Winston | debug |
-| ------------------ | ------------- | ----- | ------- | ----- |
-| Zero-cost disabled | `?.` (22x)    | noop  | noop    | check |
-| Built-in spans     | Yes           | No    | No      | No    |
-| Bundle size        | ~3KB          | ~17KB | ~200KB+ | ~2KB  |
-| TypeScript native  | Yes           | Types | Types   | Types |
-| Worker threads     | Yes           | No    | No      | No    |
+| Feature            | loggily    | Pino  | Winston | debug |
+| ------------------ | ---------- | ----- | ------- | ----- |
+| Zero-cost disabled | `?.` (22x) | noop  | noop    | check |
+| Built-in spans     | Yes        | No    | No      | No    |
+| Bundle size        | ~3KB       | ~17KB | ~200KB+ | ~2KB  |
+| TypeScript native  | Yes        | Types | Types   | Types |
+| Worker threads     | Yes        | No    | No      | No    |
 
-See [Comparison](https://github.com/beorn/decant/blob/main/docs/comparison.md) for detailed analysis of each.
+See [Comparison](https://github.com/beorn/loggily/blob/main/docs/comparison.md) for detailed analysis of each.
 
 ## Design Principles
 

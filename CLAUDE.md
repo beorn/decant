@@ -1,11 +1,11 @@
-# decant
+# loggily
 
 Structured logging with spans. Logger-first architecture: Span = Logger + Duration.
 
 ## Quick Start
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 const log = createLogger("myapp")
 
 log.info("starting")
@@ -125,7 +125,7 @@ import {
   getTraceFilter,
   setDebugFilter,
   getDebugFilter,
-} from "decant"
+} from "loggily"
 
 setLogLevel("debug") // Set minimum level
 getLogLevel() // Get current level: "debug"
@@ -146,7 +146,7 @@ getDebugFilter() // Get current filter: ["myapp", "-myapp:sql"] or null
 ### ID Format
 
 ```typescript
-import { setIdFormat, getIdFormat } from "decant"
+import { setIdFormat, getIdFormat } from "loggily"
 
 setIdFormat("simple") // sp_1, tr_1 (default)
 setIdFormat("w3c") // 16-char hex span, 32-char hex trace (W3C Trace Context)
@@ -155,7 +155,7 @@ setIdFormat("w3c") // 16-char hex span, 32-char hex trace (W3C Trace Context)
 ### traceparent Header
 
 ```typescript
-import { traceparent } from "decant"
+import { traceparent } from "loggily"
 
 const span = log.span("http-request")
 const header = traceparent(span.spanData)
@@ -166,7 +166,7 @@ fetch(url, { headers: { traceparent: header } })
 ### Sampling
 
 ```typescript
-import { setSampleRate, getSampleRate } from "decant"
+import { setSampleRate, getSampleRate } from "loggily"
 
 setSampleRate(0.1) // Sample 10% of traces (head-based)
 setSampleRate(1.0) // Sample everything (default)
@@ -175,7 +175,7 @@ setSampleRate(1.0) // Sample everything (default)
 ### Context Propagation (Node.js/Bun only)
 
 ```typescript
-import { enableContextPropagation, getCurrentSpan } from "decant/context"
+import { enableContextPropagation, getCurrentSpan } from "loggily/context"
 
 enableContextPropagation()
 
@@ -218,7 +218,7 @@ const log = createLogger("myapp")
 **Default level**: `warn` for km CLI (trace, debug, and info disabled)
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 
 const log = createLogger("km:tui")
 
@@ -284,7 +284,7 @@ In addition to `TRACE_FORMAT=json` and `NODE_ENV=production`, `LOG_FORMAT=json` 
 ## File Writer
 
 ```typescript
-import { createFileWriter } from "decant"
+import { createFileWriter } from "loggily"
 
 const writer = createFileWriter("/tmp/app.log")
 const log = createLogger("myapp", { writer })

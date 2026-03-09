@@ -1,6 +1,6 @@
 # Worker Thread API
 
-Import from `decant/worker`.
+Import from `loggily/worker`.
 
 ## Worker Side
 

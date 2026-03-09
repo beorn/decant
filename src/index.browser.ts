@@ -1,5 +1,5 @@
 /**
- * decant browser entry point.
+ * loggily browser entry point.
  *
  * Re-exports the full logger API except createFileWriter (which requires node:fs).
  * Bundlers resolve this via the "browser" condition in package.json exports.

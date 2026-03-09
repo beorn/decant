@@ -1,5 +1,5 @@
 /**
- * decant Test Suite
+ * loggily Test Suite
  *
  * Tests for the logger-first observability system.
  */

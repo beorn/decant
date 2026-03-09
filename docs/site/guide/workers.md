@@ -1,13 +1,13 @@
 # Worker Thread Support
 
-decant provides typed message protocols for forwarding logs from worker threads to the main thread.
+loggily provides typed message protocols for forwarding logs from worker threads to the main thread.
 
 ## Full Logger Forwarding
 
 ### Worker Side
 
 ```typescript
-import { createWorkerLogger } from "decant/worker"
+import { createWorkerLogger } from "loggily/worker"
 
 const log = createWorkerLogger(postMessage, "myapp:worker")
 
@@ -24,7 +24,7 @@ log.info?.("processing", { file: "data.csv" })
 ### Main Thread Side
 
 ```typescript
-import { createWorkerLogHandler, isWorkerMessage } from "decant/worker"
+import { createWorkerLogHandler, isWorkerMessage } from "loggily/worker"
 
 const handle = createWorkerLogHandler()
 
@@ -44,7 +44,7 @@ For simpler cases, forward `console.*` calls:
 ### Worker Side
 
 ```typescript
-import { forwardConsole } from "decant/worker"
+import { forwardConsole } from "loggily/worker"
 
 forwardConsole(postMessage, "myapp:worker")
 
@@ -56,7 +56,7 @@ console.error(new Error("failed"))
 ### Main Thread Side
 
 ```typescript
-import { createWorkerConsoleHandler } from "decant/worker"
+import { createWorkerConsoleHandler } from "loggily/worker"
 
 const handle = createWorkerConsoleHandler({
   defaultNamespace: "myapp:worker",
@@ -80,7 +80,7 @@ import {
   isWorkerSpanMessage,
   isWorkerMessage,
   type WorkerMessage,
-} from "decant/worker"
+} from "loggily/worker"
 ```
 
 | Type Guard               | Message Type            |
@@ -106,7 +106,7 @@ Arguments are automatically serialized for `postMessage`:
 If you need to disable console forwarding:
 
 ```typescript
-import { restoreConsole } from "decant/worker"
+import { restoreConsole } from "loggily/worker"
 
 // Later:
 restoreConsole() // Original console methods restored

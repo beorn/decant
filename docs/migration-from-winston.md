@@ -1,10 +1,10 @@
 # Migration from Winston
 
-Step-by-step guide for migrating from Winston to decant.
+Step-by-step guide for migrating from Winston to loggily.
 
 ## Why Migrate?
 
-| Feature                   | Winston                 | decant                 |
+| Feature                   | Winston                 | loggily                       |
 | ------------------------- | ----------------------- | ----------------------------- |
 | Log levels                | Customizable            | 5 fixed levels + silent       |
 | Structured data           | Yes (metadata)          | Yes (data parameter)          |
@@ -33,10 +33,10 @@ logger.info("server started", { port: 3000 })
 logger.error("request failed", { error: err.message })
 ```
 
-### After (decant)
+### After (loggily)
 
 ```typescript
-import { createLogger } from "decant"
+import { createLogger } from "loggily"
 
 const log = createLogger("myapp")
 
@@ -56,7 +56,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-// decant
+// loggily
 const log = createLogger("myapp")
 // Level, format, and output configured via env vars or API:
 // LOG_LEVEL=info, LOG_FORMAT=json, NODE_ENV=production
@@ -70,7 +70,7 @@ logger.info("starting", { port: 3000 })
 logger.info({ message: "starting", port: 3000 })
 logger.error("failed", { error: err.message, stack: err.stack })
 
-// decant — message + optional data
+// loggily — message + optional data
 log.info?.("starting", { port: 3000 })
 log.error?.(err) // Error: auto-extracts message, stack, code
 log.error?.(err, { context: "startup" }) // With extra context
@@ -78,7 +78,7 @@ log.error?.(err, { context: "startup" }) // With extra context
 
 ### Levels
 
-| Winston Level | decant Level     |
+| Winston Level | loggily Level           |
 | ------------- | ----------------------- |
 | error         | error                   |
 | warn          | warn                    |
@@ -95,7 +95,7 @@ log.error?.(err, { context: "startup" }) // With extra context
 const childLogger = logger.child({ requestId: "abc" })
 childLogger.info("processing")
 
-// decant — two patterns
+// loggily — two patterns
 const child = log.child({ requestId: "abc" }) // Context fields
 const dbLog = log.logger("db") // Namespace: myapp:db
 ```
@@ -108,8 +108,8 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), new winston.transports.File({ filename: "app.log" })],
 })
 
-// decant writers
-import { addWriter, createFileWriter } from "decant"
+// loggily writers
+import { addWriter, createFileWriter } from "loggily"
 
 // Console output is built-in (default)
 // File output via createFileWriter
@@ -134,7 +134,7 @@ const logger = winston.createLogger({
   ),
 })
 
-// decant — built-in formats
+// loggily — built-in formats
 // Development: colorized console with timestamp (default)
 // Production: JSON (NODE_ENV=production or LOG_FORMAT=json)
 // No configuration needed
@@ -148,7 +148,7 @@ logger.profile("operation")
 await doWork()
 logger.profile("operation") // logs duration
 
-// decant (built-in spans)
+// loggily (built-in spans)
 {
   using span = log.span("operation")
   await doWork()
@@ -158,7 +158,7 @@ logger.profile("operation") // logs duration
 
 ## Environment Variables
 
-| Winston                  | decant         | Effect             |
+| Winston                  | loggily               | Effect             |
 | ------------------------ | --------------------- | ------------------ |
 | N/A (configured in code) | `LOG_LEVEL=debug`     | Set minimum level  |
 | N/A                      | `DEBUG=myapp`         | Namespace filter   |
@@ -168,8 +168,8 @@ logger.profile("operation") // logs duration
 
 ## Migration Checklist
 
-1. **Update dependencies**: `bun remove winston` and `bun add decant`
-2. **Update imports**: `import winston from "winston"` → `import { createLogger } from "decant"`
+1. **Update dependencies**: `bun remove winston` and `bun add loggily`
+2. **Update imports**: `import winston from "winston"` → `import { createLogger } from "loggily"`
 3. **Replace `createLogger()`**: Winston's options → `createLogger("name")` + env vars
 4. **Convert transports** to `addWriter()` + optional `createFileWriter()`
 5. **Remove format configuration** — built-in formats handle dev/prod automatically

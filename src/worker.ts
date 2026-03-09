@@ -1,14 +1,14 @@
 /**
  * Worker Thread Logger/Console Forwarding
  *
- * Provides utilities to forward decant and console.* output from worker threads
+ * Provides utilities to forward loggily and console.* output from worker threads
  * to the main thread, ensuring proper integration with DEBUG_LOG and log files.
  *
  * ## Full Logger Forwarding (Recommended)
  *
  * @example Worker side:
  * ```typescript
- * import { createWorkerLogger } from "decant/worker"
+ * import { createWorkerLogger } from "loggily/worker"
  * const log = createWorkerLogger(postMessage, "km:worker:parse")
  *
  * log.info("processing", { file: "test.md" })
@@ -21,7 +21,7 @@
  *
  * @example Main thread side:
  * ```typescript
- * import { createWorkerLogHandler } from "decant/worker"
+ * import { createWorkerLogHandler } from "loggily/worker"
  *
  * const handleLog = createWorkerLogHandler()
  * worker.onmessage = (e) => {
@@ -33,7 +33,7 @@
  *
  * @example Worker side:
  * ```typescript
- * import { forwardConsole } from "decant/worker"
+ * import { forwardConsole } from "loggily/worker"
  * forwardConsole(postMessage)
  *
  * console.log("message")  // Forwarded to main thread
@@ -193,7 +193,7 @@ function serializeArg(arg: unknown, depth = 0): unknown {
  * @example
  * ```typescript
  * // At top of worker file:
- * import { forwardConsole } from "decant/worker"
+ * import { forwardConsole } from "loggily/worker"
  * forwardConsole(postMessage, "km:worker:parse")
  *
  * // Now all console.* calls are forwarded:
@@ -282,7 +282,7 @@ interface WorkerLoggerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerLogger } from "decant/worker"
+ * import { createWorkerLogger } from "loggily/worker"
  *
  * const log = createWorkerLogger(postMessage, "km:worker:parse")
  *
@@ -486,7 +486,7 @@ export interface WorkerConsoleHandlerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerConsoleHandler } from "decant/worker"
+ * import { createWorkerConsoleHandler } from "loggily/worker"
  *
  * const handleConsole = createWorkerConsoleHandler({
  *   defaultNamespace: "km:worker:parse"
@@ -576,7 +576,7 @@ export interface WorkerLogHandlerOptions {
  *
  * @example
  * ```typescript
- * import { createWorkerLogHandler, isWorkerMessage } from "decant/worker"
+ * import { createWorkerLogHandler, isWorkerMessage } from "loggily/worker"
  *
  * const handleLog = createWorkerLogHandler()
  *

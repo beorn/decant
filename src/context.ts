@@ -1,5 +1,5 @@
 /**
- * AsyncLocalStorage-based context propagation for decant — Node.js/Bun only.
+ * AsyncLocalStorage-based context propagation for loggily — Node.js/Bun only.
  *
  * Separated from core logger to allow tree-shaking in browser bundles.
  * When enabled, new spans automatically parent to the current context span,
@@ -7,7 +7,7 @@
  *
  * @example
  * ```typescript
- * import { enableContextPropagation, getCurrentSpan } from "decant/context"
+ * import { enableContextPropagation, getCurrentSpan } from "loggily/context"
  *
  * enableContextPropagation()
  *

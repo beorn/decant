@@ -1,5 +1,5 @@
 {
-  "name": "decant",
+  "name": "loggily",
   "version": "0.3.0",
   "description": "Structured logging with spans. ~3KB, zero-overhead disabled logging via optional chaining.",
   "keywords": [
@@ -12,11 +12,11 @@
     "typescript",
     "zero-overhead"
   ],
-  "license": "MIT",
   "homepage": "https://beorn.codes/decant/",
   "bugs": {
     "url": "https://github.com/beorn/decant/issues"
   },
+  "license": "MIT",
   "author": "Beorn",
   "repository": {
     "type": "git",
@@ -56,7 +56,7 @@
     "docs:build": "vitepress build docs/site",
     "docs:preview": "vitepress preview docs/site"
   },
-"devDependencies": {
+  "devDependencies": {
     "@types/node": "^25.3.3",
     "vitepress": "^1.6.3",
     "vitest": "^4.0.18"

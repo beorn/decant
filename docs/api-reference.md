@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API documentation for decant.
+Complete API documentation for loggily.
 
 ## Table of Contents
 
@@ -383,7 +383,7 @@ TypeScript enforces `?.` at compile time -- you can't call `log.debug()` without
 For testing and analysis, spans can be collected programmatically.
 
 ```typescript
-import { startCollecting, stopCollecting, getCollectedSpans, clearCollectedSpans, resetIds } from "decant"
+import { startCollecting, stopCollecting, getCollectedSpans, clearCollectedSpans, resetIds } from "loggily"
 
 resetIds() // Reset ID counters for deterministic tests
 startCollecting() // Enable span collection

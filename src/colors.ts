@@ -10,7 +10,7 @@ const enabled =
     ? true
     : _process?.env?.["NO_COLOR"] !== undefined
       ? false
-      : _process?.stdout?.isTTY ?? false
+      : (_process?.stdout?.isTTY ?? false)
 
 function wrap(open: string, close: string): (str: string) => string {
   if (!enabled) return (str) => str
