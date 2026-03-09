@@ -4,7 +4,7 @@
 
 ```bash
 git clone https://github.com/beorn/loggily.git
-cd logger
+cd loggily
 bun install
 bun run test        # Run tests
 bun run typecheck   # Type check

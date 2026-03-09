@@ -12,15 +12,15 @@
     "typescript",
     "zero-overhead"
   ],
-  "homepage": "https://beorn.codes/decant/",
+  "homepage": "https://beorn.codes/loggily/",
   "bugs": {
-    "url": "https://github.com/beorn/decant/issues"
+    "url": "https://github.com/beorn/loggily/issues"
   },
   "license": "MIT",
   "author": "Beorn",
   "repository": {
     "type": "git",
-    "url": "https://github.com/beorn/decant.git"
+    "url": "https://github.com/beorn/loggily.git"
   },
   "type": "module",
   "module": "src/index.ts",

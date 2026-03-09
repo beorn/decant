@@ -42,6 +42,7 @@
 
 import {
   createLogger,
+  createSpanDataProxy,
   enableSpans,
   type ConditionalLogger,
   type LazyMessage,
@@ -354,31 +355,17 @@ export function createWorkerLogger(
 
     let ended = false
 
-    const spanData: SpanData = new Proxy(customSpanData as SpanData, {
-      get(_target, prop) {
-        if (prop === "id") return spanId
-        if (prop === "traceId") return spanTraceId
-        if (prop === "parentId") return parentSpanId
-        if (prop === "startTime") return startTime
-        if (prop === "endTime") return ended ? Date.now() : null
-        if (prop === "duration") return Date.now() - startTime
-        return customSpanData[prop as string]
-      },
-      set(_target, prop, value) {
-        if (
-          prop !== "id" &&
-          prop !== "traceId" &&
-          prop !== "parentId" &&
-          prop !== "startTime" &&
-          prop !== "endTime" &&
-          prop !== "duration"
-        ) {
-          customSpanData[prop as string] = value
-          return true
-        }
-        return false
-      },
-    })
+    const spanData: SpanData = createSpanDataProxy(
+      () => ({
+        id: spanId,
+        traceId: spanTraceId,
+        parentId: parentSpanId,
+        startTime,
+        endTime: ended ? Date.now() : null,
+        duration: Date.now() - startTime,
+      }),
+      customSpanData,
+    )
 
     function endSpan(): void {
       if (ended) return

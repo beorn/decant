@@ -179,26 +179,39 @@ if (traceEnv && traceEnv !== "1" && traceEnv !== "true") {
 
 // Debug namespace filter (DEBUG=myapp or DEBUG=myapp,-myapp:noisy or DEBUG=*)
 // Supports negative patterns with `-` prefix (like the `debug` npm package)
+
+/** Parse a comma-separated namespace filter into include/exclude sets */
+function parseNamespaceFilter(input: string[]): {
+  includes: Set<string> | null
+  excludes: Set<string> | null
+} {
+  const includeList: string[] = []
+  const excludeList: string[] = []
+  for (const part of input) {
+    if (part.startsWith("-")) {
+      excludeList.push(part.slice(1))
+    } else {
+      includeList.push(part)
+    }
+  }
+  return {
+    includes: includeList.length > 0 ? new Set(includeList) : null,
+    excludes: excludeList.length > 0 ? new Set(excludeList) : null,
+  }
+}
+
 const debugEnv = getEnv("DEBUG")
 let debugIncludes: Set<string> | null = null
 let debugExcludes: Set<string> | null = null
 if (debugEnv) {
   const parts = debugEnv.split(",").map((s) => s.trim())
-  const includes: string[] = []
-  const excludes: string[] = []
-  for (const part of parts) {
-    if (part.startsWith("-")) {
-      excludes.push(part.slice(1))
-    } else {
-      includes.push(part)
-    }
+  const parsed = parseNamespaceFilter(parts)
+  debugIncludes = parsed.includes
+  // Normalize wildcard variants
+  if (debugIncludes && [...debugIncludes].some((p) => p === "*" || p === "1" || p === "true")) {
+    debugIncludes = new Set(["*"])
   }
-  if (includes.length > 0) {
-    debugIncludes = new Set(includes.some((p) => p === "*" || p === "1" || p === "true") ? ["*"] : includes)
-  }
-  if (excludes.length > 0) {
-    debugExcludes = new Set(excludes)
-  }
+  debugExcludes = parsed.excludes
   // Auto-lower log level to at least debug when DEBUG is set
   if (LOG_LEVEL_PRIORITY[currentLogLevel] > LOG_LEVEL_PRIORITY.debug) {
     currentLogLevel = "debug"
@@ -261,17 +274,9 @@ export function setDebugFilter(namespaces: string[] | null): void {
     debugIncludes = null
     debugExcludes = null
   } else {
-    const includes: string[] = []
-    const excludes: string[] = []
-    for (const ns of namespaces) {
-      if (ns.startsWith("-")) {
-        excludes.push(ns.slice(1))
-      } else {
-        includes.push(ns)
-      }
-    }
-    debugIncludes = includes.length > 0 ? new Set(includes) : null
-    debugExcludes = excludes.length > 0 ? new Set(excludes) : null
+    const parsed = parseNamespaceFilter(namespaces)
+    debugIncludes = parsed.includes
+    debugExcludes = parsed.excludes
     if (LOG_LEVEL_PRIORITY[currentLogLevel] > LOG_LEVEL_PRIORITY.debug) {
       currentLogLevel = "debug"
     }
@@ -515,6 +520,43 @@ function writeSpan(namespace: string, duration: number, attrs: Record<string, un
   if (!suppressConsole) writeStderr(formatted)
 }
 
+// ============ Shared SpanData Proxy ============
+
+interface SpanDataFields {
+  id: string
+  traceId: string
+  parentId: string | null
+  startTime: number
+  endTime: number | null
+  duration: number | null
+}
+
+/**
+ * Create a proxy that exposes span metadata as readonly and custom attributes as writable.
+ * Shared between core logger spans and worker logger spans.
+ */
+export function createSpanDataProxy(
+  getFields: () => SpanDataFields,
+  attrs: Record<string, unknown>,
+): SpanData {
+  const READONLY_KEYS = new Set(["id", "traceId", "parentId", "startTime", "endTime", "duration"])
+  return new Proxy(attrs, {
+    get(_target, prop) {
+      if (READONLY_KEYS.has(prop as string)) {
+        return getFields()[prop as keyof SpanDataFields]
+      }
+      return attrs[prop as string]
+    },
+    set(_target, prop, value) {
+      if (READONLY_KEYS.has(prop as string)) {
+        return false
+      }
+      attrs[prop as string] = value
+      return true
+    },
+  }) as SpanData
+}
+
 // ============ Implementation ============
 
 interface MutableSpanData {
@@ -556,38 +598,20 @@ function createLoggerImpl(
 
     get spanData(): SpanData | null {
       if (!spanMeta) return null
-      // Return proxy that allows attribute assignment
-      return new Proxy(spanMeta.attrs, {
-        get(_target, prop) {
-          if (prop === "id") return spanMeta.id
-          if (prop === "traceId") return spanMeta.traceId
-          if (prop === "parentId") return spanMeta.parentId
-          if (prop === "startTime") return spanMeta.startTime
-          if (prop === "endTime") return spanMeta.endTime
-          if (prop === "duration") {
-            if (spanMeta.endTime !== null) {
-              return spanMeta.endTime - spanMeta.startTime
-            }
-            return Date.now() - spanMeta.startTime
-          }
-          return spanMeta.attrs[prop as string]
-        },
-        set(_target, prop, value) {
-          // Allow setting custom attributes
-          if (
-            prop !== "id" &&
-            prop !== "traceId" &&
-            prop !== "parentId" &&
-            prop !== "startTime" &&
-            prop !== "endTime" &&
-            prop !== "duration"
-          ) {
-            spanMeta.attrs[prop as string] = value
-            return true
-          }
-          return false
-        },
-      }) as SpanData
+      return createSpanDataProxy(
+        () => ({
+          id: spanMeta.id,
+          traceId: spanMeta.traceId,
+          parentId: spanMeta.parentId,
+          startTime: spanMeta.startTime,
+          endTime: spanMeta.endTime,
+          duration:
+            spanMeta.endTime !== null
+              ? spanMeta.endTime - spanMeta.startTime
+              : Date.now() - spanMeta.startTime,
+        }),
+        spanMeta.attrs,
+      )
     },
 
     trace: (msg, data) => log("trace", msg, data),
