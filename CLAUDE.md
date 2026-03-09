@@ -2,6 +2,19 @@
 
 Structured logging with spans. Logger-first architecture: Span = Logger + Duration.
 
+## Documentation Site
+
+VitePress docs at `docs/` — deployed to beorn.github.io/loggily via GitHub Pages.
+
+- **Source**: `docs/` (edit files here)
+- **Config**: `docs/.vitepress/config.ts`
+- **Build**: `bun run docs:build` (runs `vitepress build docs`)
+- **Build output**: `docs/.vitepress/dist/` (gitignored)
+- **Logo**: `docs/public/logo.svg`
+- **CI**: `.github/workflows/docs.yml` — auto-deploys on push to main
+
+**Do NOT create or edit `docs/site/`** — docs live directly in `docs/`.
+
 ## Quick Start
 
 ```typescript
