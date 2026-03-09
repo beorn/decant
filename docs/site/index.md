@@ -15,9 +15,9 @@ hero:
 
 features:
   - title: "Debug Logging"
-    details: "Namespace filtering with DEBUG=myapp,-myapp:noisy — same ergonomics as the debug package. Conditional output that costs nothing when disabled."
+    details: "Namespace filtering with DEBUG=myapp,-myapp:noisy — same ergonomics as the debug package. Uses native console methods so source lines stay clickable in DevTools."
   - title: "Structured Logs"
-    details: "Structured logging with levels, pretty console in development, JSON in production. Dual output format switches automatically via NODE_ENV."
+    details: "Colorized console with timestamps and clickable source lines in development. Structured JSON in production. Same code, same API — output format switches automatically."
   - title: "Distributed Tracing"
     details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. All integrated — no separate SDK to wire up."
   - title: Zero-Overhead via ?.

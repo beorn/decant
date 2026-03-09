@@ -10,6 +10,8 @@ Debug logging, structured logs, and distributed tracing — integrated into one 
 
 Most projects wire together three separate tools that don't talk to each other: **debug** for conditional output, **pino/winston** for production logs, **OpenTelemetry** for tracing. decant integrates all three into one unified system — same namespace tree, same output pipeline, same `?.` zero-overhead pattern. Every logger is a potential span: call `.span()` and it becomes one, with automatic timing, parent-child tracking, and trace IDs. Nothing to sync, nothing to configure separately.
 
+In development, you get colorized console output with timestamps, level colors, and clickable source lines — decant uses native `console` methods so stack traces stay intact in DevTools. In production, the same code emits structured JSON. No config change needed.
+
 Read **[The Journey](docs/guide.md)** for the full story.
 
 ## Install
@@ -63,7 +65,7 @@ For trivial arguments the difference is negligible. But for real-world logging �
 - **Spans** — time any operation with `using span = log.span("name")`. Automatic duration, parent-child tracking, and trace IDs. *(Uses TC39 [Explicit Resource Management](https://github.com/tc39/proposal-explicit-resource-management); call `span.end()` manually if your runtime doesn't support `using` yet.)*
 - **Lazy messages** — `log.debug?.(() => expensiveString())` skips the function entirely when disabled.
 - **Child context** — `log.child({ requestId })` adds structured fields to every message in the chain.
-- **Dual output** — pretty console in development, structured JSON in production (`NODE_ENV=production` or `LOG_FORMAT=json`).
+- **Dev & production** — colorized console with timestamps, level colors, and clickable source lines in development. Structured JSON in production. Switches automatically via `NODE_ENV` — same code, zero config.
 - **File writer** — `addWriter()` + `createFileWriter()` for buffered file output with auto-flush.
 - **Worker threads** — forward logs from workers to the main thread with full type safety (`decant/worker`).
 - **Drop-in debug replacement** — reads `DEBUG=myapp:*` just like the debug package. Swap your imports in minutes.

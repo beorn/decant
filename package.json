@@ -13,6 +13,11 @@
     "zero-overhead"
   ],
   "license": "MIT",
+  "homepage": "https://beorn.codes/decant/",
+  "bugs": {
+    "url": "https://github.com/beorn/decant/issues"
+  },
+  "author": "Beorn",
   "repository": {
     "type": "git",
     "url": "https://github.com/beorn/decant.git"
