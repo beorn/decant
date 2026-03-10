@@ -22,6 +22,10 @@
     "type": "git",
     "url": "https://github.com/beorn/loggily.git"
   },
+  "files": [
+    "src",
+    "dist"
+  ],
   "type": "module",
   "module": "src/index.ts",
   "types": "./dist/index.d.ts",
@@ -47,6 +51,9 @@
       "types": "./dist/tracing.d.ts",
       "default": "./src/tracing.ts"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
