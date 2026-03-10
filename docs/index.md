@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "loggily"
+  name: "Loggily"
   text: "Clarity without the clutter"
   tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. Zero dependencies, zero-overhead via optional chaining."
   actions:
