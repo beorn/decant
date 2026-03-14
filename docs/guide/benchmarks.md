@@ -88,12 +88,14 @@ Span create + dispose (no output):
 
 ## Key Takeaways
 
-1. **Disabled + expensive args**: Loggily's `?.` pattern is 31x faster than pino, 194x faster than winston. This is the main differentiator.
-2. **Disabled + cheap args**: Pino is faster due to no Proxy overhead. Both are sub-microsecond.
+1. **Disabled + expensive args**: Loggily's `?.` pattern is 31x faster than pino, 194x faster than winston. This is the main differentiator -- the big win is specifically for disabled logging with expensive argument construction (string interpolation, JSON serialization, computed values), not universal logger throughput.
+2. **Disabled + cheap args**: Pino is faster due to no Proxy overhead. Both are sub-microsecond -- the difference is negligible in practice.
 3. **Enabled + cheap args**: Loggily is ~1.3x faster than pino when both write to the same kind of noop sink.
 4. **Enabled + structured data**: Loggily and pino are comparable; both are ~2x faster than winston.
 5. **Enabled + Error objects**: Loggily is fastest, ~1.9x faster than pino.
 6. **The `?.` advantage grows with argument cost**: The more expensive your log arguments, the bigger the win.
+
+> **Note**: Pino is optimized for high-throughput enabled JSON logging with transport pipelines. Loggily's biggest advantage is skipping work when logs are disabled. For max-throughput production logging with custom transports, Pino may be a better fit.
 
 ## Reproducing
 
