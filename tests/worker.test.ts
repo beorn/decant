@@ -588,3 +588,203 @@ describe("full logger end-to-end", () => {
     expect(consoleOutput.some((o) => o.message.includes("done"))).toBe(true)
   })
 })
+
+// ============ Bug Fix Tests ============
+
+describe("bug: worker span forwarding preserves original IDs and timing", () => {
+  test("span end event preserves worker spanId, traceId, parentId", () => {
+    enableSpans()
+    const handler = createWorkerLogHandler({ enableSpans: true })
+
+    handler({
+      type: "span",
+      event: "end",
+      namespace: "test:work",
+      spanId: "wsp_original",
+      traceId: "wtr_original",
+      parentId: "wsp_parent",
+      startTime: 1000,
+      endTime: 1100,
+      duration: 100,
+      props: {},
+      spanData: { count: 42 },
+      timestamp: Date.now(),
+    })
+
+    // The span output should contain the original worker span/trace IDs, not new ones
+    const spanOutput = consoleOutput.find((o) => o.message.includes("SPAN"))
+    expect(spanOutput).toBeDefined()
+    expect(spanOutput!.message).toContain("wsp_original")
+    expect(spanOutput!.message).toContain("wtr_original")
+    expect(spanOutput!.message).toContain("wsp_parent")
+  })
+
+  test("span end event preserves worker duration, not new timing", () => {
+    enableSpans()
+    const handler = createWorkerLogHandler({ enableSpans: true })
+
+    // Send a span with a known duration of 500ms
+    handler({
+      type: "span",
+      event: "end",
+      namespace: "test:work",
+      spanId: "wsp_1",
+      traceId: "wtr_1",
+      parentId: null,
+      startTime: 1000,
+      endTime: 1500,
+      duration: 500,
+      props: {},
+      spanData: {},
+      timestamp: Date.now(),
+    })
+
+    // The output should show 500ms, not some near-zero duration from creating and
+    // immediately ending a new span on the main thread
+    const spanOutput = consoleOutput.find((o) => o.message.includes("SPAN"))
+    expect(spanOutput).toBeDefined()
+    expect(spanOutput!.message).toContain("500ms")
+  })
+})
+
+describe("bug: postMessage error handling sends diagnostic fallback", () => {
+  beforeEach(() => {
+    resetWorkerIds()
+  })
+
+  test("log postMessage failure sends diagnostic fallback", () => {
+    const messages: WorkerMessage[] = []
+    let callCount = 0
+    const failingPostMessage = (msg: WorkerMessage) => {
+      callCount++
+      if (callCount === 1) {
+        throw new DOMException("Failed to execute 'postMessage': could not be cloned")
+      }
+      messages.push(msg)
+    }
+
+    const log = createWorkerLogger(failingPostMessage, "test")
+    log.info("message with uncloneable data", { fn: () => {} })
+
+    // Should have sent a diagnostic fallback message instead of silently dropping
+    expect(messages.length).toBeGreaterThanOrEqual(1)
+    const fallback = messages[0]!
+    expect(fallback.type).toBe("log")
+    expect((fallback as WorkerLogMessage).level).toBe("error")
+    expect((fallback as WorkerLogMessage).message).toContain("postMessage")
+  })
+
+  test("span start postMessage failure sends diagnostic fallback", () => {
+    const messages: WorkerMessage[] = []
+    let callCount = 0
+    const failingPostMessage = (msg: WorkerMessage) => {
+      callCount++
+      if (callCount === 1) {
+        // First call is span start — make it fail
+        throw new DOMException("Failed to execute 'postMessage': could not be cloned")
+      }
+      messages.push(msg)
+    }
+
+    const log = createWorkerLogger(failingPostMessage, "test")
+    const span = log.span("work", { uncloneable: () => {} })
+    span.end()
+
+    // Should have a diagnostic fallback for the failed span start
+    expect(messages.some((m) => m.type === "log" && (m as WorkerLogMessage).message.includes("postMessage"))).toBe(true)
+  })
+
+  test("span end postMessage failure sends diagnostic fallback", () => {
+    const messages: WorkerMessage[] = []
+    let callCount = 0
+    const failingPostMessage = (msg: WorkerMessage) => {
+      callCount++
+      // Let span start succeed (call 1), fail on span end (call 2)
+      if (callCount === 2) {
+        throw new DOMException("Failed to execute 'postMessage': could not be cloned")
+      }
+      messages.push(msg)
+    }
+
+    const log = createWorkerLogger(failingPostMessage, "test")
+    const span = log.span("work")
+    span.spanData.circular = {} as Record<string, unknown>
+    ;(span.spanData.circular as Record<string, unknown>).self = span.spanData.circular
+    span.end()
+
+    // Should have a diagnostic fallback for the failed span end
+    const diagnostics = messages.filter(
+      (m) => m.type === "log" && (m as WorkerLogMessage).message.includes("postMessage"),
+    )
+    expect(diagnostics.length).toBeGreaterThanOrEqual(1)
+  })
+})
+
+describe("bug: console handler handles circular/bigint without throwing", () => {
+  test("createWorkerConsoleHandler handles BigInt args", () => {
+    const handler = createWorkerConsoleHandler({ defaultNamespace: "test" })
+
+    // Should not throw when args contain BigInt (JSON.stringify throws on BigInt)
+    expect(() => {
+      handler({
+        type: "console",
+        level: "info",
+        args: ["value:", BigInt(42)],
+        timestamp: Date.now(),
+      })
+    }).not.toThrow()
+
+    expect(consoleOutput).toHaveLength(1)
+  })
+
+  test("createWorkerConsoleHandler handles circular refs in args", () => {
+    const handler = createWorkerConsoleHandler({ defaultNamespace: "test" })
+    const circular: Record<string, unknown> = { name: "test" }
+    circular.self = circular
+
+    expect(() => {
+      handler({
+        type: "console",
+        level: "info",
+        args: ["obj:", circular],
+        timestamp: Date.now(),
+      })
+    }).not.toThrow()
+
+    expect(consoleOutput).toHaveLength(1)
+  })
+
+  test("createWorkerLogHandler handles BigInt in console args", () => {
+    const handler = createWorkerLogHandler()
+
+    expect(() => {
+      handler({
+        type: "console",
+        level: "info",
+        namespace: "test",
+        args: ["bigint:", BigInt(999)],
+        timestamp: Date.now(),
+      })
+    }).not.toThrow()
+
+    expect(consoleOutput).toHaveLength(1)
+  })
+
+  test("createWorkerLogHandler handles circular refs in console args", () => {
+    const handler = createWorkerLogHandler()
+    const circular: Record<string, unknown> = { data: 1 }
+    circular.ref = circular
+
+    expect(() => {
+      handler({
+        type: "console",
+        level: "info",
+        namespace: "test",
+        args: ["circular:", circular],
+        timestamp: Date.now(),
+      })
+    }).not.toThrow()
+
+    expect(consoleOutput).toHaveLength(1)
+  })
+})

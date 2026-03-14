@@ -31,43 +31,10 @@ import {
   isContextPropagationEnabled,
   runInSpanContext,
 } from "../src/context.ts"
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Test Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface CapturedLog {
-  level: string
-  message: string
-}
+import { createConsoleMock } from "./helpers.ts"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const parseJSON = (s: string): Record<string, any> => JSON.parse(s)
-
-function createConsoleMock() {
-  const output: CapturedLog[] = []
-  const capture =
-    (level: string) =>
-    (msg: unknown): void => {
-      output.push({ level, message: String(msg) })
-    }
-
-  vi.spyOn(console, "debug").mockImplementation(capture("debug"))
-  vi.spyOn(console, "info").mockImplementation(capture("info"))
-  vi.spyOn(console, "warn").mockImplementation(capture("warn"))
-  vi.spyOn(console, "error").mockImplementation(capture("error"))
-
-  vi.spyOn(process.stderr, "write").mockImplementation(((chunk: string | Uint8Array) => {
-    output.push({ level: "stderr", message: String(chunk) })
-    return true
-  }) as typeof process.stderr.write)
-
-  return {
-    output,
-    findSpan: () => output.find((o) => o.message.includes("SPAN")),
-    findSpans: () => output.filter((o) => o.message.includes("SPAN")),
-  }
-}
 
 let consoleMock: ReturnType<typeof createConsoleMock>
 
@@ -199,6 +166,39 @@ describe("traceparent()", () => {
     const header = traceparent(span.spanData)
     // Should still produce valid traceparent format
     expect(header).toMatch(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/)
+
+    span.end()
+  })
+
+  test("emits 01 (sampled) by default", () => {
+    setIdFormat("w3c")
+    const log = createLogger("test")
+    const span = log.span("request")
+
+    const header = traceparent(span.spanData)
+    expect(header).toMatch(/-01$/)
+
+    span.end()
+  })
+
+  test("emits 00 (not sampled) when sampled=false", () => {
+    setIdFormat("w3c")
+    const log = createLogger("test")
+    const span = log.span("request")
+
+    const header = traceparent(span.spanData, { sampled: false })
+    expect(header).toMatch(/-00$/)
+
+    span.end()
+  })
+
+  test("emits 01 (sampled) when sampled=true explicitly", () => {
+    setIdFormat("w3c")
+    const log = createLogger("test")
+    const span = log.span("request")
+
+    const header = traceparent(span.spanData, { sampled: true })
+    expect(header).toMatch(/-01$/)
 
     span.end()
   })

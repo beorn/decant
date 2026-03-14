@@ -6,7 +6,7 @@ Comparison of Loggily against pino, winston, and debug.
 
 **Methodology**: All "enabled" benchmarks write to in-process noop sinks (no I/O syscalls) for a fair apples-to-apples comparison of formatting and serialization throughput:
 
-- beorn: `addWriter(noop)` + `setSuppressConsole(true)` + `setOutputMode("writers-only")`
+- Loggily: `addWriter(noop)` + `setSuppressConsole(true)` + `setOutputMode("writers-only")`
 - pino: `pino(opts, noopWritableStream)`
 - winston: `Stream` transport with noop `Writable`
 
@@ -62,19 +62,19 @@ Logging with structured data (`{ key: "value", count: 42 }`), all to noop sinks:
 | pino        |    1M |   738.2 |     1.1x |
 | winston     |  587K | 1,703.6 |     2.5x |
 
-Beorn and pino are neck-and-neck for structured data. Both are roughly 2.5x faster than winston.
+Loggily and pino are neck-and-neck for structured data. Both are roughly 2.5x faster than winston.
 
 ## Enabled Warn — Error Object
 
 Logging with an Error object, all to noop sinks:
 
-| Library     | ops/s | ns/op | Relative |
-| ----------- | ----: | ----: | -------: |
-| **Loggily** |    1M | 990.9 |     1.0x |
-| winston     |  839K |   1.2 |     1.2x |
-| pino        |  541K |   1.8 |     1.9x |
+| Library     | ops/s |  ns/op | Relative |
+| ----------- | ----: | -----: | -------: |
+| **Loggily** |    1M |  990.9 |     1.0x |
+| winston     |  839K | 1191.4 |     1.2x |
+| pino        |  541K | 1848.4 |     1.9x |
 
-Beorn handles Error objects fastest, nearly 2x faster than pino. Pino's Error serialization is heavier due to its structured JSON pipeline.
+Loggily handles Error objects fastest, nearly 2x faster than pino. Pino's Error serialization is heavier due to its structured JSON pipeline.
 
 ## Span Creation
 

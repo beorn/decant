@@ -153,7 +153,7 @@ LOG_FORMAT=json bun run app
 
 ## Next Steps
 
-- [Zero-Overhead Logging](/guide/zero-overhead) -- How optional chaining works and benchmarks
+- [Near-Zero Cost Logging](/guide/zero-overhead) -- How optional chaining works and benchmarks
 - [Spans](/guide/spans) -- Timing, nesting, trace IDs
 - [Worker Threads](/guide/workers) -- Forward logs from workers
 - [API Reference](/api/) -- Complete API documentation

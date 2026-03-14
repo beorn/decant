@@ -60,8 +60,8 @@ export function createFileWriter(filePath: string, options: FileWriterOptions = 
   function flush(): void {
     if (buffer.length === 0 || fd === null) return
     const data = buffer
-    buffer = ""
     writeSync(fd, data)
+    buffer = ""
   }
 
   // Set up periodic flush
@@ -93,12 +93,18 @@ export function createFileWriter(filePath: string, options: FileWriterOptions = 
         clearInterval(timer)
         timer = null
       }
-      flush()
-      if (fd !== null) {
-        closeSync(fd)
-        fd = null
+      try {
+        flush()
+      } catch {
+        // Swallow flush errors during close — data loss is unavoidable
+        // at this point, but we must still release the fd and exit handler.
+      } finally {
+        if (fd !== null) {
+          closeSync(fd)
+          fd = null
+        }
+        process.removeListener("exit", exitHandler)
       }
-      process.removeListener("exit", exitHandler)
     },
   }
 }

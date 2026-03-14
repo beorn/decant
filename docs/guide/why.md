@@ -38,7 +38,7 @@ For cheap arguments the overhead is ~0.2ns -- negligible. For expensive argument
 
 | Feature            | Loggily    | Pino  | Winston | debug |
 | ------------------ | ---------- | ----- | ------- | ----- |
-| Zero-cost disabled | `?.` (22x) | noop  | noop    | check |
+| Near-zero disabled | `?.` (22x) | noop  | noop    | check |
 | Built-in spans     | Yes        | No    | No      | No    |
 | Bundle size        | ~3KB       | ~17KB | ~200KB+ | ~2KB  |
 | TypeScript native  | Yes        | Types | Types   | Types |
@@ -49,7 +49,7 @@ See [Comparison](/guide/comparison) for detailed analysis of each.
 ## Design Principles
 
 1. **Logger = Span**: Every logger can become a span. No separate tracing library needed.
-2. **Zero cost**: Disabled levels skip everything, including argument evaluation.
+2. **Near-zero cost**: Disabled levels skip argument evaluation entirely via optional chaining.
 3. **Minimal surface**: Few functions, each does one thing well.
 4. **Type enforced**: TypeScript makes `?.` mandatory -- you can't accidentally call a disabled level.
 5. **Structured**: JSON in production, readable console in development.

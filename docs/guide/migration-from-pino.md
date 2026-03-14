@@ -173,6 +173,6 @@ logger.info({ duration: Date.now() - start }, "operation complete")
 3. **Swap argument order**: Pino uses `(data, message)`, Loggily uses `(message, data)`
 4. **Replace `logger.child()`** with `.child()` (context) or `.logger()` (namespace)
 5. **Convert transports** to writers via `addWriter()`
-6. **Add `?.`** to all log calls for zero-overhead disabled logging
+6. **Add `?.`** to all log calls for near-zero cost disabled logging
 7. **Convert manual timing** to spans with `using`
 8. **Replace `fatal`** with `error` (add a custom label in data if needed)

@@ -4,10 +4,10 @@ layout: home
 hero:
   name: "Loggily"
   text: "Clarity without the clutter"
-  tagline: "Debug logging, structured logs, and distributed tracing — integrated into one ~3KB library. Zero dependencies, zero-overhead via optional chaining."
+  tagline: "Debug-style namespaces, structured JSON output, and lightweight spans — integrated into one ~3KB library. Disabled logs skip argument evaluation via optional chaining."
   actions:
     - theme: brand
-      text: The Journey
+      text: Get Started
       link: /guide/journey
     - theme: alt
       text: View on GitHub
@@ -15,18 +15,20 @@ hero:
 
 features:
   - title: "Debug Logging"
-    details: "Namespace filtering with DEBUG=myapp,-myapp:noisy — same ergonomics as the debug package. Uses native console methods so source lines stay clickable in DevTools."
+    details: "debug-compatible namespace filtering with DEBUG=myapp,-myapp:noisy. Uses native console methods so source lines stay clickable in DevTools."
   - title: "Structured Logs"
     details: "Colorized console with timestamps and clickable source lines in development. Structured JSON in production. Same code, same API — output format switches automatically."
-  - title: "Distributed Tracing"
-    details: "Built-in spans with automatic timing, parent-child tracking, trace IDs, and traceparent headers. All integrated — no separate SDK to wire up."
-  - title: Zero-Overhead via ?.
-    details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. Typically 10x+ faster for real-world logging with string interpolation and serialization."
+  - title: "Lightweight Spans"
+    details: "Built-in spans with automatic timing, parent-child tracking, and trace IDs. For full OpenTelemetry interoperability, use OpenTelemetry."
+  - title: Near-Zero Cost via ?.
+    details: "Optional chaining skips the entire call — including argument evaluation — when a level is disabled. The big win is disabled logging with expensive arguments (string interpolation, serialization) — typically 10x+ faster."
   - title: ~3KB, Zero Dependencies
-    details: "No external dependencies. Native TypeScript, ESM-only. Runs on Node, Bun, and Deno."
+    details: "No external dependencies. Native TypeScript, ESM-only. Runs on Node 18+, Bun 1.0+, and browsers."
   - title: One Unified Pipeline
-    details: "Most projects wire together debug, pino, and OpenTelemetry — three configs, three formats, three APIs. Loggily integrates all three: one namespace tree, one output pipeline, one import instead of three."
+    details: "Many projects end up with separate tools for debug output, production logs, and tracing — three configs, three formats, three APIs. Loggily integrates all three: one namespace tree, one output pipeline, one import."
 ---
+
+> Early release (0.x) — API may evolve before 1.0.
 
 ## Quick Start
 
@@ -55,16 +57,29 @@ import { createLogger } from "loggily"
 
 const log = createLogger("myapp")
 
-// ?. skips the entire call — including argument evaluation — when the level is disabled (near-zero cost)
+// ?. skips the entire call — including argument evaluation — when the level is disabled
 log.info?.("server started", { port: 3000 })
 log.debug?.("cache hit", { key: "user:42" })
 log.error?.(new Error("connection lost"))
+```
 
-// Spans time operations automatically
+### Spans
+
+```typescript
+// With `using` (TS 5.2+, Bun 1.0+, Node 22+)
 {
   using span = log.span("db:query", { table: "users" })
   const users = await db.query("SELECT * FROM users")
   span.spanData.count = users.length
 }
 // Output: SPAN myapp:db:query (45ms) {count: 100, table: "users"}
+
+// Without `using` — call .end() manually
+const span = log.span("db:query", { table: "users" })
+try {
+  const users = await db.query("SELECT * FROM users")
+  span.spanData.count = users.length
+} finally {
+  span.end()
+}
 ```

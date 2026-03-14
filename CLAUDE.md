@@ -228,7 +228,7 @@ const log = createLogger("myapp")
 `createLogger` returns `undefined` for disabled log levels, enabling zero-overhead logging.
 
 **Log levels** (most → least verbose): `trace < debug < info < warn < error < silent`
-**Default level**: `warn` for km CLI (trace, debug, and info disabled)
+**Default level**: `info` (trace and debug disabled)
 
 ```typescript
 import { createLogger } from "loggily"

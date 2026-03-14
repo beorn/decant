@@ -4,19 +4,19 @@ How Loggily compares to popular Node.js logging libraries.
 
 ## Feature Comparison Table
 
-| Feature                | Loggily     | Pino    | Winston   | Bunyan    | debug     |
-| ---------------------- | ----------- | ------- | --------- | --------- | --------- |
-| **Log Levels**         | Yes (5)     | Yes (6) | Yes (7)   | Yes (6)   | No        |
-| **Structured Logging** | Yes         | Yes     | Yes       | Yes       | No        |
-| **JSON Output**        | Yes         | Yes     | Yes       | Yes       | No        |
-| **Spans/Tracing**      | Built-in    | No      | No        | No        | No        |
-| **Zero-cost Disabled** | Yes (`?.`)  | No      | No        | No        | No        |
-| **Child Loggers**      | Yes         | Yes     | Yes       | Yes       | Manual    |
-| **Transports**         | File writer | Yes     | Yes       | Yes       | No        |
-| **Pretty Print**       | Auto (dev)  | Plugin  | Plugin    | Plugin    | Yes       |
-| **Browser Support**    | Partial     | Yes     | Yes       | Yes       | Yes       |
-| **Bundle Size**        | ~3KB        | ~17KB   | ~200KB+   | ~30KB     | ~2KB      |
-| **TypeScript**         | Native      | Yes     | Types pkg | Types pkg | Types pkg |
+| Feature                | Loggily               | Pino    | Winston   | Bunyan    | debug     |
+| ---------------------- | --------------------- | ------- | --------- | --------- | --------- |
+| **Log Levels**         | Yes (5)               | Yes (6) | Yes (7)   | Yes (6)   | No        |
+| **Structured Logging** | Yes                   | Yes     | Yes       | Yes       | No        |
+| **JSON Output**        | Yes                   | Yes     | Yes       | Yes       | No        |
+| **Lightweight Spans**  | Built-in              | No      | No        | No        | No        |
+| **Near-zero Disabled** | Yes (`?.`)            | No      | No        | No        | No        |
+| **Child Loggers**      | Yes                   | Yes     | Yes       | Yes       | Manual    |
+| **Transports**         | File + custom writers | Yes     | Yes       | Yes       | No        |
+| **Pretty Print**       | Auto (dev)            | Plugin  | Plugin    | Plugin    | Yes       |
+| **Browser Support**    | Partial               | Yes     | Yes       | Yes       | Yes       |
+| **Bundle Size**        | ~3KB                  | ~17KB   | ~200KB+   | ~30KB     | ~2KB      |
+| **TypeScript**         | Native                | Yes     | Types pkg | Types pkg | Types pkg |
 
 ## vs Pino
 
@@ -33,7 +33,7 @@ How Loggily compares to popular Node.js logging libraries.
 
 | Aspect             | Pino                           | Loggily                            |
 | ------------------ | ------------------------------ | ---------------------------------- |
-| Zero-cost disabled | Noop function (args evaluated) | Optional chaining (args skipped)   |
+| Near-zero disabled | Noop function (args evaluated) | Optional chaining (args skipped)   |
 | Spans              | External (pino-opentelemetry)  | Built-in                           |
 | Transports         | Built-in (worker threads)      | File writer + custom via addWriter |
 | Formatters         | Plugin system                  | Console/JSON auto-switch           |
@@ -49,7 +49,7 @@ How Loggily compares to popular Node.js logging libraries.
 
 **Choose Loggily if:**
 
-- You want zero-cost disabled logging via optional chaining
+- You want near-zero cost disabled logging via optional chaining
 - You need built-in span timing
 - You prefer simplicity over configuration
 - Bundle size matters
@@ -84,14 +84,14 @@ child.info("logged in", { user: "alice" })
 
 ### Differences
 
-| Aspect        | Winston                | Loggily             |
-| ------------- | ---------------------- | ------------------- |
-| Philosophy    | Flexible, configurable | Simple, opinionated |
-| Transports    | 10+ built-in           | stdout only         |
-| Configuration | Extensive              | Minimal (env vars)  |
-| Performance   | Moderate               | High                |
-| Bundle Size   | ~200KB+                | ~3KB                |
-| Spans         | No                     | Built-in            |
+| Aspect        | Winston                | Loggily                            |
+| ------------- | ---------------------- | ---------------------------------- |
+| Philosophy    | Flexible, configurable | Simple, opinionated                |
+| Transports    | 10+ built-in           | File writer + custom via addWriter |
+| Configuration | Extensive              | Minimal (env vars)                 |
+| Performance   | Moderate               | High                               |
+| Bundle Size   | ~200KB+                | ~3KB                               |
+| Spans         | No                     | Built-in                           |
 
 ### When to Choose
 
@@ -140,13 +140,13 @@ log.info("starting", { port: 3000 })
 
 ### Differences
 
-| Aspect        | Bunyan                 | Loggily                     |
-| ------------- | ---------------------- | --------------------------- |
-| Output Format | JSON only              | Console (dev) / JSON (prod) |
-| CLI Tools     | bunyan CLI for viewing | None                        |
-| Streams       | Multiple streams       | stdout only                 |
-| Spans         | No                     | Built-in                    |
-| API           | Verbose                | Simple                      |
+| Aspect        | Bunyan                 | Loggily                            |
+| ------------- | ---------------------- | ---------------------------------- |
+| Output Format | JSON only              | Console (dev) / JSON (prod)        |
+| CLI Tools     | bunyan CLI for viewing | None                               |
+| Streams       | Multiple streams       | File writer + custom via addWriter |
+| Spans         | No                     | Built-in                           |
+| API           | Verbose                | Simple                             |
 
 ### When to Choose
 
@@ -213,7 +213,7 @@ child.info("logged in", { user: "alice" })
 - You need log levels
 - You need structured data
 - You need timing spans
-- You want zero-cost disabled logging
+- You want near-zero cost disabled logging
 
 ### Code Comparison
 
@@ -235,7 +235,7 @@ See [migration-from-debug.md](./migration-from-debug.md) for a detailed migratio
 
 ## Unique Features of Loggily
 
-### 1. Zero-cost Disabled Logging
+### 1. Near-Zero Cost Disabled Logging
 
 Optional chaining skips argument evaluation entirely:
 
@@ -303,13 +303,13 @@ NODE_ENV=production bun run app
 
 ## Summary
 
-| Use Case                                | Recommended      |
-| --------------------------------------- | ---------------- |
-| High-performance with optional chaining | Loggily          |
-| Built-in span timing                    | Loggily          |
-| Multiple transports                     | Pino or Winston  |
-| Extensive configuration                 | Winston          |
-| JSON CLI tools                          | Bunyan           |
-| Simple debugging only                   | debug            |
-| Minimal bundle size                     | debug or Loggily |
-| TypeScript-first                        | Loggily or Pino  |
+| Use Case                        | Recommended      |
+| ------------------------------- | ---------------- |
+| Near-zero cost disabled logging | Loggily          |
+| Built-in span timing            | Loggily          |
+| Multiple transports             | Pino or Winston  |
+| Extensive configuration         | Winston          |
+| JSON CLI tools                  | Bunyan           |
+| Simple debugging only           | debug            |
+| Minimal bundle size             | debug or Loggily |
+| TypeScript-first                | Loggily or Pino  |

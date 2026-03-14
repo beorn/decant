@@ -30,7 +30,7 @@ export default defineConfig({
         {
           text: "Features",
           items: [
-            { text: "Zero-Overhead Logging", link: "/guide/zero-overhead" },
+            { text: "Near-Zero Cost Logging", link: "/guide/zero-overhead" },
             { text: "Spans", link: "/guide/spans" },
             { text: "Worker Threads", link: "/guide/workers" },
           ],
@@ -59,6 +59,8 @@ export default defineConfig({
             { text: "Overview", link: "/api/" },
             { text: "Logger", link: "/api/logger" },
             { text: "Configuration", link: "/api/configuration" },
+            { text: "Tracing", link: "/api/tracing" },
+            { text: "Context Propagation", link: "/api/context" },
             { text: "Writers", link: "/api/writers" },
             { text: "Worker Thread", link: "/api/worker" },
           ],

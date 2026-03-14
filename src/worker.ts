@@ -44,6 +44,7 @@ import {
   createLogger,
   createSpanDataProxy,
   enableSpans,
+  writeSpan,
   type ConditionalLogger,
   type LazyMessage,
   type Logger,
@@ -320,8 +321,19 @@ export function createWorkerLogger(
         data: data ? { ...props, ...data } : Object.keys(props).length > 0 ? props : undefined,
         timestamp: Date.now(),
       })
-    } catch {
-      // Worker might be shutting down
+    } catch (err) {
+      // postMessage failed (e.g. uncloneable data) — send a diagnostic fallback
+      try {
+        postMessage({
+          type: "log",
+          level: "error",
+          namespace,
+          message: `postMessage failed for ${level} "${resolved}": ${err instanceof Error ? err.message : String(err)}`,
+          timestamp: Date.now(),
+        })
+      } catch {
+        // Worker might be shutting down — truly nothing we can do
+      }
     }
   }
 
@@ -349,8 +361,19 @@ export function createWorkerLogger(
         spanData: {},
         timestamp: Date.now(),
       })
-    } catch {
-      // Worker might be shutting down
+    } catch (err) {
+      // postMessage failed (e.g. uncloneable props) — send a diagnostic fallback
+      try {
+        postMessage({
+          type: "log",
+          level: "error",
+          namespace: fullNamespace,
+          message: `postMessage failed for span start "${fullNamespace}": ${err instanceof Error ? err.message : String(err)}`,
+          timestamp: Date.now(),
+        })
+      } catch {
+        // Worker might be shutting down
+      }
     }
 
     let ended = false
@@ -389,8 +412,19 @@ export function createWorkerLogger(
           spanData: customSpanData,
           timestamp: Date.now(),
         })
-      } catch {
-        // Worker might be shutting down
+      } catch (err) {
+        // postMessage failed (e.g. uncloneable spanData) — send a diagnostic fallback
+        try {
+          postMessage({
+            type: "log",
+            level: "error",
+            namespace: fullNamespace,
+            message: `postMessage failed for span end "${fullNamespace}" (${duration}ms): ${err instanceof Error ? err.message : String(err)}`,
+            timestamp: Date.now(),
+          })
+        } catch {
+          // Worker might be shutting down
+        }
       }
     }
 
@@ -463,6 +497,60 @@ export interface WorkerConsoleHandlerOptions {
   logger?: Logger
 }
 
+/** Safely stringify a value, handling circular refs and BigInt */
+function safeStringify(value: unknown): string {
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
+}
+
+/** Format console args into a message string and optional data object */
+function formatConsoleArgs(args: unknown[]): { message: string; data: Record<string, unknown> | undefined } {
+  const message =
+    args.length === 0
+      ? ""
+      : args.length === 1 && typeof args[0] === "string"
+        ? args[0]
+        : args.map((a) => (typeof a === "string" ? a : safeStringify(a))).join(" ")
+
+  const lastArg = args[args.length - 1]
+  const data =
+    args.length > 1 && typeof lastArg === "object" && lastArg !== null && !Array.isArray(lastArg)
+      ? (lastArg as Record<string, unknown>)
+      : undefined
+
+  return { message, data }
+}
+
+/** Dispatch a message to a logger at the given console level */
+function dispatchToLogger(
+  logger: ConditionalLogger,
+  level: "log" | "debug" | "info" | "warn" | "error" | "trace",
+  message: string,
+  data?: Record<string, unknown>,
+): void {
+  switch (level) {
+    case "trace":
+      logger.trace?.(message, data)
+      break
+    case "debug":
+      logger.debug?.(message, data)
+      break
+    case "info":
+    case "log":
+      logger.info?.(message, data)
+      break
+    case "warn":
+      logger.warn?.(message, data)
+      break
+    case "error":
+      logger.error?.(message, data)
+      break
+  }
+}
+
 /**
  * Create a handler for worker console messages.
  *
@@ -506,42 +594,8 @@ export function createWorkerConsoleHandler(
 
   return (message: WorkerConsoleMessage) => {
     const logger = getLogger(message.namespace)
-    const args = message.args
-
-    // Format args into a message string
-    const formattedMessage =
-      args.length === 0
-        ? ""
-        : args.length === 1 && typeof args[0] === "string"
-          ? args[0]
-          : args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ")
-
-    // Extract data object if present (last arg is object and not a string)
-    const lastArg = args[args.length - 1]
-    const data =
-      args.length > 1 && typeof lastArg === "object" && lastArg !== null && !Array.isArray(lastArg)
-        ? (lastArg as Record<string, unknown>)
-        : undefined
-
-    // Log at the appropriate level (use ?. since level might be disabled)
-    switch (message.level) {
-      case "trace":
-        logger.trace?.(formattedMessage, data)
-        break
-      case "debug":
-        logger.debug?.(formattedMessage, data)
-        break
-      case "info":
-      case "log":
-        logger.info?.(formattedMessage, data)
-        break
-      case "warn":
-        logger.warn?.(formattedMessage, data)
-        break
-      case "error":
-        logger.error?.(formattedMessage, data)
-        break
-    }
+    const { message: msg, data } = formatConsoleArgs(message.args)
+    dispatchToLogger(logger, message.level, msg, data)
   }
 }
 
@@ -595,77 +649,23 @@ export function createWorkerLogHandler(options: WorkerLogHandlerOptions = {}): (
 
   return (message: WorkerMessage) => {
     if (isWorkerConsoleMessage(message)) {
-      // Handle console messages
       const logger = getLogger(message.namespace || "worker")
-      const args = message.args
-      const formattedMessage =
-        args.length === 0
-          ? ""
-          : args.length === 1 && typeof args[0] === "string"
-            ? args[0]
-            : args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" ")
-
-      const lastArg = args[args.length - 1]
-      const data =
-        args.length > 1 && typeof lastArg === "object" && lastArg !== null && !Array.isArray(lastArg)
-          ? (lastArg as Record<string, unknown>)
-          : undefined
-
-      // Use ?. since level might be disabled
-      switch (message.level) {
-        case "trace":
-          logger.trace?.(formattedMessage, data)
-          break
-        case "debug":
-          logger.debug?.(formattedMessage, data)
-          break
-        case "info":
-        case "log":
-          logger.info?.(formattedMessage, data)
-          break
-        case "warn":
-          logger.warn?.(formattedMessage, data)
-          break
-        case "error":
-          logger.error?.(formattedMessage, data)
-          break
-      }
+      const { message: msg, data } = formatConsoleArgs(message.args)
+      dispatchToLogger(logger, message.level, msg, data)
     } else if (isWorkerLogMessage(message)) {
-      // Handle structured log messages
       const logger = getLogger(message.namespace)
-
-      // Use ?. since level might be disabled
-      switch (message.level) {
-        case "trace":
-          logger.trace?.(message.message, message.data)
-          break
-        case "debug":
-          logger.debug?.(message.message, message.data)
-          break
-        case "info":
-          logger.info?.(message.message, message.data)
-          break
-        case "warn":
-          logger.warn?.(message.message, message.data)
-          break
-        case "error":
-          logger.error?.(message.message, message.data)
-          break
-      }
+      dispatchToLogger(logger, message.level, message.message, message.data)
     } else if (isWorkerSpanMessage(message)) {
       // Handle span events
-      // For span end events, create a span and immediately end it with the timing data
+      // For span end events, output the span with original worker timing data
       if (message.event === "end") {
-        const logger = getLogger(message.namespace)
-        const span = logger.span(undefined, message.props)
-
-        // Copy span data
-        for (const [key, value] of Object.entries(message.spanData)) {
-          span.spanData[key] = value
-        }
-
-        // End the span (this will output the span timing)
-        span.end()
+        writeSpan(message.namespace, message.duration ?? 0, {
+          span_id: message.spanId,
+          trace_id: message.traceId,
+          parent_id: message.parentId,
+          ...message.props,
+          ...message.spanData,
+        })
       }
       // Start events are informational only on main thread
       // (the actual timing happens in the worker)

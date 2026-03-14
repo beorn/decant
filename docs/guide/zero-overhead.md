@@ -1,4 +1,6 @@
-# Zero-Overhead Logging
+# Near-Zero Cost Logging
+
+Optional chaining skips argument evaluation when a level is disabled. For trivial arguments, the difference is negligible (~0.2ns). For expensive arguments (string interpolation, JSON serialization, computed values), the win is typically **10x+** because the work is never done.
 
 ## How It Works
 

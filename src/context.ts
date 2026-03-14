@@ -41,6 +41,13 @@ export interface SpanContext {
 let storage: AsyncLocalStorage<SpanContext> | null = null
 let contextEnabled = false
 
+/**
+ * Map from spanId → the SpanContext that was active when the span was entered.
+ * Used to restore the exact previous context on exit, avoiding corruption
+ * from non-LIFO end() ordering.
+ */
+const previousContexts = new Map<string, SpanContext | null>()
+
 // ============ API ============
 
 /**
@@ -99,30 +106,38 @@ export function getCurrentSpan(): SpanContext | null {
  * spans with `using` — since `using` doesn't wrap user code in a callback,
  * `enterWith()` is the right primitive.
  *
+ * Captures the full previous SpanContext snapshot so it can be restored
+ * exactly on exit, even with non-LIFO end() ordering.
+ *
  * @internal
  */
 export function enterSpanContext(spanId: string, traceId: string, parentId: string | null): void {
   if (!contextEnabled || !storage) return
+
+  // Capture the full previous context before overwriting
+  const previous = storage.getStore() ?? null
+  previousContexts.set(spanId, previous)
+
   storage.enterWith({ spanId, traceId, parentId })
 }
 
 /**
- * Restore the parent span context (called when a span ends).
- * Re-enters the parent's context, or clears the context if there is no parent.
+ * Restore the previous span context (called when a span ends).
+ * Restores the exact SpanContext snapshot captured at enter time,
+ * preventing corruption from non-LIFO end() ordering.
  *
  * @internal
  */
-export function exitSpanContext(parentId: string | null, parentTraceId: string | null): void {
+export function exitSpanContext(spanId: string): void {
   if (!contextEnabled || !storage) return
-  if (parentId && parentTraceId) {
-    // Restore parent context — note: we don't have the parent's parentId
-    // but that's fine since this context is only used for auto-tagging and
-    // auto-parenting new child spans (which will read spanId and traceId).
-    storage.enterWith({ spanId: parentId, traceId: parentTraceId, parentId: null })
+
+  const previous = previousContexts.get(spanId)
+  previousContexts.delete(spanId)
+
+  if (previous) {
+    storage.enterWith(previous)
   } else {
-    // No parent — exit the context entirely
-    // enterWith(undefined as any) is not ideal, but there's no "exitWith"
-    // We use a sentinel to indicate "no active span"
+    // No previous context — exit entirely
     storage.enterWith(undefined as unknown as SpanContext)
   }
 }

@@ -339,8 +339,8 @@ let _getContextParent: (() => { spanId: string; traceId: string } | null) | null
 /** Hook to enter a span context (sets AsyncLocalStorage for the current async scope) */
 let _enterContext: ((spanId: string, traceId: string, parentId: string | null) => void) | null = null
 
-/** Hook to exit a span context (restores parent or clears) */
-let _exitContext: ((parentId: string | null, parentTraceId: string | null) => void) | null = null
+/** Hook to exit a span context (restores previous context snapshot) */
+let _exitContext: ((spanId: string) => void) | null = null
 
 /**
  * Register context propagation hooks (called by context.ts).
@@ -350,7 +350,7 @@ export function _setContextHooks(hooks: {
   getContextTags: () => Record<string, string>
   getContextParent: () => { spanId: string; traceId: string } | null
   enterContext: (spanId: string, traceId: string, parentId: string | null) => void
-  exitContext: (parentId: string | null, parentTraceId: string | null) => void
+  exitContext: (spanId: string) => void
 }): void {
   _getContextTags = hooks.getContextTags
   _getContextParent = hooks.getContextParent
@@ -379,6 +379,24 @@ function shouldTraceNamespace(namespace: string): boolean {
   if (!spansEnabled) return false
   if (!traceFilter) return true
   return matchesNamespaceSet(namespace, traceFilter)
+}
+
+/**
+ * Safe JSON.stringify that handles bigint, circular refs, symbols, and Error objects.
+ * Prevents crashes from non-serializable values in log data.
+ */
+function safeStringify(value: unknown): string {
+  const seen = new WeakSet()
+  return JSON.stringify(value, (_key, val) => {
+    if (typeof val === "bigint") return val.toString()
+    if (typeof val === "symbol") return val.toString()
+    if (val instanceof Error) return { message: val.message, stack: val.stack, name: val.name }
+    if (typeof val === "object" && val !== null) {
+      if (seen.has(val)) return "[Circular]"
+      seen.add(val)
+    }
+    return val
+  })
 }
 
 function formatConsole(namespace: string, level: string, message: string, data?: Record<string, unknown>): string {
@@ -410,7 +428,7 @@ function formatConsole(namespace: string, level: string, message: string, data?:
   let output = `${time} ${levelStr} ${ns} ${message}`
 
   if (data && Object.keys(data).length > 0) {
-    output += ` ${pc.dim(JSON.stringify(data))}`
+    output += ` ${pc.dim(safeStringify(data))}`
   }
 
   return output
@@ -424,14 +442,7 @@ function formatJSON(namespace: string, level: string, message: string, data?: Re
     msg: message,
     ...data,
   }
-  const seen = new WeakSet()
-  return JSON.stringify(entry, (_key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) return "[Circular]"
-      seen.add(value)
-    }
-    return value
-  })
+  return safeStringify(entry)
 }
 
 function matchesNamespaceSet(namespace: string, set: Set<string>): boolean {
@@ -507,7 +518,7 @@ function writeLog(
   }
 }
 
-function writeSpan(namespace: string, duration: number, attrs: Record<string, unknown>): void {
+export function writeSpan(namespace: string, duration: number, attrs: Record<string, unknown>): void {
   if (!shouldTraceNamespace(namespace)) return
   if (!shouldDebugNamespace(namespace)) return
 
@@ -673,8 +684,25 @@ function createLoggerImpl(
         newSpanData.endTime = Date.now()
         newSpanData.duration = newSpanData.endTime - newSpanData.startTime
 
-        // Exit span context (restore parent or clear)
-        _exitContext?.(resolvedParentId, resolvedParentId ? finalTraceId : null)
+        // Collect span data if collection is active
+        if (collectSpans) {
+          collectedSpans.push(
+            createSpanDataProxy(
+              () => ({
+                id: newSpanData.id,
+                traceId: newSpanData.traceId,
+                parentId: newSpanData.parentId,
+                startTime: newSpanData.startTime,
+                endTime: newSpanData.endTime,
+                duration: newSpanData.duration,
+              }),
+              { ...newSpanData.attrs },
+            ),
+          )
+        }
+
+        // Exit span context (restore previous context snapshot)
+        _exitContext?.(newSpanId)
 
         // Only emit span if sampled
         if (sampled) {

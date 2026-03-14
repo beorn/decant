@@ -173,7 +173,7 @@ logger.profile("operation") // logs duration
 3. **Replace `createLogger()`**: Winston's options → `createLogger("name")` + env vars
 4. **Convert transports** to `addWriter()` + optional `createFileWriter()`
 5. **Remove format configuration** — built-in formats handle dev/prod automatically
-6. **Add `?.`** to all log calls for zero-overhead disabled logging
+6. **Add `?.`** to all log calls for near-zero cost disabled logging
 7. **Map custom levels**: http→info, verbose→debug, silly→trace
 8. **Convert `logger.profile()`** to spans with `using`
 9. **Replace `logger.child()`** with `.child()` (context) or `.logger()` (namespace)

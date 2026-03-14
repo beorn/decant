@@ -1,16 +1,22 @@
 {
   "name": "loggily",
   "version": "0.3.0",
-  "description": "Structured logging with spans. ~3KB, zero-overhead disabled logging via optional chaining.",
+  "description": "TypeScript logger with debug-style namespaces, structured JSON output, and lightweight spans. Disabled logs skip argument evaluation via optional chaining.",
   "keywords": [
+    "browser",
+    "bun",
+    "debug",
+    "json-logger",
     "logger",
     "logging",
+    "namespace",
+    "node",
+    "observability",
     "optional-chaining",
     "spans",
-    "structured",
+    "structured-logging",
     "tracing",
-    "typescript",
-    "zero-overhead"
+    "typescript"
   ],
   "homepage": "https://beorn.codes/loggily/",
   "bugs": {

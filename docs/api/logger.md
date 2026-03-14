@@ -6,7 +6,7 @@
 function createLogger(name: string, props?: Record<string, unknown>): ConditionalLogger
 ```
 
-Create a conditional logger. Disabled log levels return `undefined` -- use `?.` for zero-overhead.
+Create a conditional logger. Disabled log levels return `undefined` -- use `?.` to skip argument evaluation when disabled.
 
 ```typescript
 const log = createLogger("myapp", { version: "2.1" })

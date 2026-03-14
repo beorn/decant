@@ -115,7 +115,7 @@ export const log = new Proxy(baseLog, {
         return undefined
       }
     }
-    return (target as any)[prop]
+    return (target as unknown as Record<string, unknown>)[prop]
   },
 })
 ```
@@ -123,14 +123,14 @@ export const log = new Proxy(baseLog, {
 ### TypeScript Types
 
 ```typescript
-type ConditionalLogger = {
-  trace?: (msg: string, data?: object) => void
-  debug?: (msg: string, data?: object) => void
-  info?: (msg: string, data?: object) => void
-  warn?: (msg: string, data?: object) => void
-  error: (msg: string, data?: object) => void // Always available
-  logger: (ns?: string, props?: object) => ConditionalLogger
-  span?: (ns?: string, props?: object) => SpanLogger | undefined
+interface ConditionalLogger {
+  trace?: (msg: LazyMessage, data?: Record<string, unknown>) => void
+  debug?: (msg: LazyMessage, data?: Record<string, unknown>) => void
+  info?: (msg: LazyMessage, data?: Record<string, unknown>) => void
+  warn?: (msg: LazyMessage, data?: Record<string, unknown>) => void
+  error?: (msg: LazyMessage | Error, data?: Record<string, unknown>) => void
+  logger(ns?: string, props?: Record<string, unknown>): Logger
+  span(ns?: string, props?: Record<string, unknown>): SpanLogger
 }
 ```
 

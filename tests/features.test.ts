@@ -25,40 +25,10 @@ import {
   addWriter,
   type FileWriter,
 } from "../src/index.ts"
+import { createConsoleMock } from "./helpers.ts"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const parseJSON = (s: string): Record<string, any> => JSON.parse(s)
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Test Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface CapturedLog {
-  level: string
-  message: string
-}
-
-/** Create a mock console that captures output */
-function createConsoleMock() {
-  const output: CapturedLog[] = []
-  const capture =
-    (level: string) =>
-    (msg: unknown): void => {
-      output.push({ level, message: String(msg) })
-    }
-
-  vi.spyOn(console, "debug").mockImplementation(capture("debug"))
-  vi.spyOn(console, "info").mockImplementation(capture("info"))
-  vi.spyOn(console, "warn").mockImplementation(capture("warn"))
-  vi.spyOn(console, "error").mockImplementation(capture("error"))
-
-  vi.spyOn(process.stderr, "write").mockImplementation(((chunk: string | Uint8Array) => {
-    output.push({ level: "stderr", message: String(chunk) })
-    return true
-  }) as typeof process.stderr.write)
-
-  return { output }
-}
 
 let consoleMock: ReturnType<typeof createConsoleMock>
 

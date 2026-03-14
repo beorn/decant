@@ -64,6 +64,12 @@ export function resetIdCounters(): void {
 
 // ============ W3C Traceparent ============
 
+/** Options for traceparent header formatting */
+export interface TraceparentOptions {
+  /** Whether this span is sampled. Defaults to true for backwards compatibility. */
+  sampled?: boolean
+}
+
 /**
  * Format a W3C traceparent header from span data.
  *
@@ -71,11 +77,12 @@ export function resetIdCounters(): void {
  * - version: "00" (current W3C spec version)
  * - trace-id: 32 hex chars (128 bits)
  * - span-id: 16 hex chars (64 bits)
- * - trace-flags: "01" (sampled)
+ * - trace-flags: "01" (sampled) or "00" (not sampled)
  *
  * Works with both simple and W3C ID formats. Simple IDs are zero-padded to spec length.
  *
  * @param spanData - Span data with id and traceId
+ * @param options - Optional settings (sampled flag). Defaults to sampled=true.
  * @returns W3C traceparent header string
  *
  * @example
@@ -86,10 +93,11 @@ export function resetIdCounters(): void {
  * fetch(url, { headers: { traceparent: header } })
  * ```
  */
-export function traceparent(spanData: SpanData): string {
+export function traceparent(spanData: SpanData, options?: TraceparentOptions): string {
   const traceId = padHex(spanData.traceId, 32)
   const spanId = padHex(spanData.id, 16)
-  return `00-${traceId}-${spanId}-01`
+  const flags = (options?.sampled ?? true) ? "01" : "00"
+  return `00-${traceId}-${spanId}-${flags}`
 }
 
 /** Pad or hash an ID to the specified hex length */

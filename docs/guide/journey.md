@@ -1,10 +1,10 @@
 # The Guide
 
-> Clarity without the clutter. Ergonomic unified logs, spans, metrics, and debugs for modern TypeScript.
+> Clarity without the clutter. Ergonomic unified logs, spans, and debugs for modern TypeScript.
 
 Your first app uses `console.log`. That's enough for a script, a prototype, a small server. Then your app grows. You need structured logs for production, the `debug` package for conditional verbose output, a tracing library for timings, maybe OpenTelemetry for distributed traces — and suddenly you're juggling three tools with three APIs, three configuration schemes, and three output formats.
 
-Loggily is one library where structured logging, debug-style conditional output, timed spans, and metrics all share the same namespace tree, the same output pipeline, and the same zero-overhead pattern. You adopt each capability when you need it. Nothing is wasted, nothing conflicts, nothing clutters your code.
+Loggily is one library where structured logging, debug-style conditional output, and timed spans all share the same namespace tree, the same output pipeline, and the same `?.` pattern for near-zero cost disabled logging. You adopt each capability when you need it. Nothing is wasted, nothing conflicts, nothing clutters your code.
 
 ## Level 1: Just Log
 
@@ -20,7 +20,7 @@ log.warn?.("disk space low", { free: "2GB" })
 log.error?.(new Error("connection failed"))
 ```
 
-Notice the `?.` — if a log level is disabled, the entire call is skipped, including argument evaluation. In benchmarks, this makes disabled log calls ~22x faster than a traditional logger that still evaluates its arguments. You get zero-cost logging for disabled levels, not just low-cost.
+Notice the `?.` -- if a log level is disabled, the entire call is skipped, including argument evaluation. For trivial arguments the overhead difference is negligible, but for real-world logging with string interpolation and serialization, this is typically **10x+ faster** because it skips the work entirely.
 
 Colorized in your terminal, with source locations:
 

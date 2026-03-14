@@ -30,19 +30,38 @@
 | `getCollectedSpans()` / `clearCollectedSpans()` | Access collected spans         |
 | `resetIds()`                                    | Reset span/trace ID counters   |
 
+### Tracing
+
+| Export                                    | Description                        |
+| ----------------------------------------- | ---------------------------------- |
+| `setIdFormat(format)` / `getIdFormat()`   | ID format (`"simple"` or `"w3c"`)  |
+| `traceparent(spanData, opts?)`            | Format W3C traceparent header      |
+| `setSampleRate(rate)` / `getSampleRate()` | Head-based sampling rate (0.0-1.0) |
+
 ### Types
 
-| Export              | Description                               |
-| ------------------- | ----------------------------------------- |
-| `Logger`            | Full logger interface                     |
-| `SpanLogger`        | Logger + Disposable + SpanData            |
-| `ConditionalLogger` | Logger with optional methods              |
-| `SpanData`          | Span timing and attributes                |
-| `LogLevel`          | `"trace" \| "debug" \| ... \| "silent"`   |
-| `LogFormat`         | `"console" \| "json"`                     |
-| `LazyMessage`       | `string \| (() => string)`                |
-| `OutputMode`        | `"console" \| "stderr" \| "writers-only"` |
-| `FileWriter`        | `{ write, flush, close }`                 |
+| Export               | Description                               |
+| -------------------- | ----------------------------------------- |
+| `Logger`             | Full logger interface                     |
+| `SpanLogger`         | Logger + Disposable + SpanData            |
+| `ConditionalLogger`  | Logger with optional methods              |
+| `SpanData`           | Span timing and attributes                |
+| `LogLevel`           | `"trace" \| "debug" \| ... \| "silent"`   |
+| `LogFormat`          | `"console" \| "json"`                     |
+| `LazyMessage`        | `string \| (() => string)`                |
+| `OutputMode`         | `"console" \| "stderr" \| "writers-only"` |
+| `FileWriter`         | `{ write, flush, close }`                 |
+| `IdFormat`           | `"simple" \| "w3c"`                       |
+| `TraceparentOptions` | `{ sampled?: boolean }`                   |
+
+## Exports from `loggily/context`
+
+| Export                                                       | Description                            |
+| ------------------------------------------------------------ | -------------------------------------- |
+| `enableContextPropagation()` / `disableContextPropagation()` | AsyncLocalStorage context control      |
+| `isContextPropagationEnabled()`                              | Check if context propagation is active |
+| `getCurrentSpan()`                                           | Get current span context               |
+| `runInSpanContext(ctx, fn)`                                  | Run function in specific context       |
 
 ## Exports from `loggily/worker`
 

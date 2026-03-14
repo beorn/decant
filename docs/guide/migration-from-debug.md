@@ -11,7 +11,7 @@ Step-by-step guide for migrating from the `debug` package to `loggily`.
 | Performance        | Good                | Better (conditional logging skips arg eval) |
 | Timing/spans       | No                  | Built-in spans with auto-timing             |
 | JSON output        | No                  | Yes (production/TRACE_FORMAT=json)          |
-| Zero-cost disabled | No                  | Yes (optional chaining pattern)             |
+| Near-zero disabled | No                  | Yes (optional chaining pattern)             |
 
 ## Quick Migration
 

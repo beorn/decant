@@ -77,7 +77,7 @@ const noopStream = () =>
 
 // ── loggily setup ──────────────────────────────────────────────────────
 
-const beornLog = createLogger("bench")
+const loggilyLog = createLogger("bench")
 // Route all output to noop writer, suppress console
 setSuppressConsole(true)
 setOutputMode("writers-only")
@@ -167,7 +167,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 
   const results = [
     measure("noop()", () => noop(), N),
-    measure("beorn: log.debug?.(str)", () => beornLog.debug?.("hello"), N),
+    measure("loggily: log.debug?.(str)", () => loggilyLog.debug?.("hello"), N),
     measure("pino: log.debug(str)", () => pinoDisabled.debug("hello"), N),
     measure("winston: log.debug(str)", () => winstonDisabled.debug("hello"), N),
     measure('debug: debug("hello")', () => debugFn("hello"), N),
@@ -182,7 +182,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 
   const results = [
     measure("noop(expensive)", () => noop(), N),
-    measure("beorn: log.debug?.(expensive)", () => beornLog.debug?.(`state: ${expensiveArg()}`), N),
+    measure("loggily: log.debug?.(expensive)", () => loggilyLog.debug?.(`state: ${expensiveArg()}`), N),
     measure("pino: log.debug(expensive)", () => pinoDisabled.debug(`state: ${expensiveArg()}`), N),
     measure("winston: log.debug(expensive)", () => winstonDisabled.debug(`state: ${expensiveArg()}`), N),
     measure("debug: debug(expensive)", () => debugFn(`state: ${expensiveArg()}`), N),
@@ -193,7 +193,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 
 // ─── PART 2: ENABLED LOGGING (all to noop writers) ───────────────────────────
 // Fair comparison: all loggers format + serialize, all write to noop sinks.
-// beorn: addWriter(noop) + setSuppressConsole(true) + setOutputMode("writers-only")
+// loggily: addWriter(noop) + setSuppressConsole(true) + setOutputMode("writers-only")
 // pino: pino(opts, noopWritableStream)
 // winston: Stream transport with noop Writable
 
@@ -202,7 +202,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
   setLogLevel("info") // info enabled
 
   const results = [
-    measure("beorn: log.info?.(str)", () => beornLog.info?.("hello"), N / 10),
+    measure("loggily: log.info?.(str)", () => loggilyLog.info?.("hello"), N / 10),
     measure("pino: log.info(str)", () => pinoEnabled.info("hello"), N / 10),
     measure("winston: log.info(str)", () => winstonEnabled.info("hello"), N / 10),
   ]
@@ -217,7 +217,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
   const structuredData = { key: "value", count: 42 }
 
   const results = [
-    measure("beorn: log.info?.(str, data)", () => beornLog.info?.("request", structuredData), N / 10),
+    measure("loggily: log.info?.(str, data)", () => loggilyLog.info?.("request", structuredData), N / 10),
     measure("pino: log.info(obj, str)", () => pinoEnabled.info(structuredData, "request"), N / 10),
     measure("winston: log.info(str, data)", () => winstonEnabled.info("request", structuredData), N / 10),
   ]
@@ -232,7 +232,7 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
   const err = new Error("something broke")
 
   const results = [
-    measure("beorn: log.warn?.(Error)", () => beornLog.warn?.(err), N / 10),
+    measure("loggily: log.warn?.(Error)", () => loggilyLog.warn?.(err), N / 10),
     measure("pino: log.warn(Error)", () => pinoEnabled.warn({ err }, "something broke"), N / 10),
     measure("winston: log.warn(str, Error)", () => winstonEnabled.warn("something broke", { error: err }), N / 10),
   ]
@@ -249,9 +249,9 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 
   const results = [
     measure(
-      "beorn: span create+dispose",
+      "loggily: span create+dispose",
       () => {
-        using _s = beornLog.span("op")
+        using _s = loggilyLog.span("op")
       },
       N / 10,
     ),
@@ -262,6 +262,6 @@ console.log(`Platform: ${process.platform} ${process.arch}`)
 
 console.log("\n" + "─".repeat(70))
 console.log("Key: ops/s = operations per second, /op = time per operation")
-console.log("beorn uses ?. for zero-overhead: disabled calls skip argument evaluation")
+console.log("loggily uses ?. for zero-overhead: disabled calls skip argument evaluation")
 console.log("Enabled benchmarks: all loggers write to noop sinks (fair comparison)")
 console.log("")
