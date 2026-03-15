@@ -69,6 +69,10 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18"
+  },
   "devDependencies": {
     "@types/node": "^25.3.3",
     "vitepress": "^1.6.3",
